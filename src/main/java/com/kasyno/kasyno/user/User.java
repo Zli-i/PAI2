@@ -26,6 +26,7 @@ public class User {
     private Long id;
     private String nickname;
     private String email;
+    private String password;
     private LocalDate dob;
     private LocalDate joined;
 
@@ -35,17 +36,19 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String nickname, String email, LocalDate dob, LocalDate joined) {
+    public User(Long id, String nickname, String email, String password, LocalDate dob, LocalDate joined) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
+        this.password = password;
         this.dob = dob;
         this.joined = joined;
     }
 
-    public User(String nickname, String email, LocalDate dob, LocalDate joined) {
+    public User(String nickname, String email, String password, LocalDate dob, LocalDate joined) {
         this.nickname = nickname;
         this.email = email;
+        this.password = password;
         this.dob = dob;
         this.joined = joined;
     }

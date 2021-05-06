@@ -17,6 +17,7 @@ public class UserConfig {
             User stefan = new User(
                     "Stefan",
                     "costam@gmail.com",
+                    "123456",
                     LocalDate.of(1998, Month.JANUARY, 5),
                     LocalDate.of(2021, Month.JANUARY, 5)
 
@@ -25,6 +26,7 @@ public class UserConfig {
             User marian = new User(
                     "marian",
                     "costam@gmail.com",
+                    "123456",
                     LocalDate.of(1997, Month.JANUARY, 5),
                     LocalDate.of(2021, Month.JANUARY, 5)
 

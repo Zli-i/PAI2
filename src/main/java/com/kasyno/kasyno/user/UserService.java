@@ -24,14 +24,38 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void addNewUser(User user) {
+    public String addNewUser(User user) {
         Optional<User> userByEmail = userRepository.findUserByEmail(user.getEmail());
 
         if (userByEmail.isPresent() ) {
-            throw new IllegalStateException("email taken");
+            //throw new IllegalStateException("email taken");
+            return "Email jest już zajęty";
         }
         else {
             userRepository.save(user);
+            return "Udało się zarejestrować";
+        }
+    }
+
+    public String login(
+                           String nickname,
+                           String password) {
+
+        User user = userRepository.findUserByNickname(nickname);
+
+        if (nickname != null && nickname.length() > 0 ) {
+
+            if (user == null){
+                return "Nie ma użytkownika o takiej nazwie";
+            }
+        }
+
+        if (password != null && password.length() > 0 && Objects.equals(user.getPassword(), password)) {
+
+           return "Udało się zalogować";
+        }
+        else {
+            return "Niepoprawne hasło";
         }
     }
 

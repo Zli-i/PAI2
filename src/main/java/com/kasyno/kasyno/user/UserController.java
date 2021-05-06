@@ -21,9 +21,17 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @PostMapping
-    public void registerNewUser(@RequestBody User user) {
-        userService.addNewUser(user);
+    @PostMapping("/register")
+    public String registerNewUser(@RequestBody User user) {
+        return userService.addNewUser(user);
+    }
+
+    @PutMapping(path = "/login/{nickname}")
+    public String login(
+            @PathVariable("nickname") String nickname,
+            @RequestParam String password){
+
+        return userService.login( nickname, password);
     }
 
     @PutMapping(path = "{userId}")
