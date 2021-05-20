@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -32,6 +33,12 @@ public class UserController {
             @RequestParam String password){
 
         return userService.login( nickname, password);
+    }
+
+    @GetMapping(path = "{userId}")
+    public Optional<User> getUser(@PathVariable("userId") Long userId ) {
+
+        return userService.getUser(userId);
     }
 
     @PutMapping(path = "{userId}")
