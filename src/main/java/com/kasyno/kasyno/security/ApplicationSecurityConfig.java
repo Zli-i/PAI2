@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static com.kasyno.kasyno.security.ApplicationUserRole.*;
+
 @Configuration
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -21,8 +23,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/users")
-                .permitAll()
+                .antMatchers("/index", "/css/*", "js/*").permitAll()
+                .antMatchers("/users").hasRole(USER.name())
+                .antMatchers("/users/*").hasRole(ADMIN.name())
                 .anyRequest()
                 .authenticated()
                 .and()
