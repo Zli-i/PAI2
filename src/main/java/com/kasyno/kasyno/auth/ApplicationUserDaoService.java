@@ -27,19 +27,19 @@ public class ApplicationUserDaoService implements ApplicationUserDao{
         return Optional.empty();
     }
 
-    private List<ApplicationUser> getApplicationUsers() {
-        List<ApplicationUser> getApplicationUsers = Lists.newArrayList(
-                new ApplicationUser(
-                        "Anna",
-                        passwordEncoder.encode("password"),
-                        USER.getGrantedAuthorities(),
-                        true,
-                        true,
-                        true,
-                        true
-                )
-        );
-
-        return getApplicationUsers;
-    }
+//    private List<ApplicationUser> getApplicationUsers() {
+//        List<ApplicationUser> getApplicationUsers = Lists.newArrayList(
+//                new ApplicationUser(
+//                        "Anna",
+//                        passwordEncoder.encode("password"),
+//                        USER.getGrantedAuthorities(),
+//                        true,
+//                        true,
+//                        true,
+//                        true
+//                )
+//        );
+//
+//        return getApplicationUsers;
+//    }
 }
