@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import static com.kasyno.kasyno.security.ApplicationUserPermission.*;
 import static com.kasyno.kasyno.security.ApplicationUserRole.*;
 
 @Configuration
@@ -29,8 +30,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/index", "/css/*", "js/*").permitAll()
-                .antMatchers("/users").hasRole(USER.name())
-                .antMatchers("/users/*").hasRole(ADMIN.name())
+                .antMatchers("/users").hasAuthority(USER_READ.getPermission())
+                .antMatchers("/users/*").hasAuthority(ADMIN_READ.getPermission())
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -43,13 +44,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails anna = User.builder()
                 .username("anna")
                 .password(passwordEncoder.encode("password"))
-                .roles(USER.name())
+                .authorities(USER.getGrantedAuthorities())
                 .build();
 
         UserDetails derek = User.builder()
                 .username("derek")
                 .password(passwordEncoder.encode("password"))
-                .roles(ADMIN.name())
+                .authorities(ADMIN.getGrantedAuthorities())
                 .build();
 
         return new InMemoryUserDetailsManager(anna, derek);
