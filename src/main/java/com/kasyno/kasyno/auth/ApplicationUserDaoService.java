@@ -1,44 +1,39 @@
 package com.kasyno.kasyno.auth;
 
 
-import com.kasyno.kasyno.security.ApplicationUserPermission;
-import com.kasyno.kasyno.security.ApplicationUserRole;
+import com.kasyno.kasyno.user.User;
+import com.kasyno.kasyno.user.UserRepository;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.kasyno.kasyno.security.ApplicationUserRole.*;
 
-@Repository("PG")
+@Repository("PSQL")
 public class ApplicationUserDaoService implements ApplicationUserDao{
 
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ApplicationUserDaoService(PasswordEncoder passwordEncoder) {
+    public ApplicationUserDaoService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
         this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
     @Override
     public Optional<ApplicationUser> selectApplicationUserByUsername(String username) {
 
-        return getApplicationUsers()
-                .stream()
-                .filter(applicationUser -> username.equals(applicationUser.getUsername()))
-                .findFirst();
-    }
+        Optional<User> userByNickname = userRepository.findUserByNickname(username);
 
-
-    private List<ApplicationUser> getApplicationUsers() {
-        List<ApplicationUser> getApplicationUsers = Lists.newArrayList(
+        Optional<ApplicationUser> applicationUser = Optional.of(
                 new ApplicationUser(
-                        "Anna",
-                        passwordEncoder.encode("password"),
+                        userByNickname.get().getNickname(),
+                        passwordEncoder.encode(userByNickname.get().getPassword()),
                         USER.getGrantedAuthorities(),
                         true,
                         true,
@@ -47,6 +42,6 @@ public class ApplicationUserDaoService implements ApplicationUserDao{
                 )
         );
 
-        return getApplicationUsers;
+        return applicationUser;
     }
 }

@@ -45,7 +45,7 @@ public class UserService {
                            String nickname,
                            String password) {
 
-        User user = userRepository.findUserByNickname(nickname);
+        Optional<User>  user = userRepository.findUserByNickname(nickname);
 
         if (nickname != null && nickname.length() > 0 ) {
 
@@ -53,8 +53,8 @@ public class UserService {
                 return "Nie ma użytkownika o takiej nazwie";
             }
         }
-
-        if (password != null && password.length() > 0 && Objects.equals(user.getPassword(), password)) {
+;
+        if (password != null && password.length() > 0 && Objects.equals(user.get().getPassword(), password)) {
 
            return "Udało się zalogować";
         }
