@@ -14,13 +14,13 @@ import java.util.Optional;
 
 import static com.kasyno.kasyno.security.ApplicationUserRole.*;
 
-@Repository("PG")
-public class ApplicationUserDaoService implements ApplicationUserDao{
+@Repository("Fake")
+public class FakeApplicationUserDaoService implements ApplicationUserDao{
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ApplicationUserDaoService(PasswordEncoder passwordEncoder) {
+    public FakeApplicationUserDaoService(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -40,6 +40,15 @@ public class ApplicationUserDaoService implements ApplicationUserDao{
                         "Anna",
                         passwordEncoder.encode("password"),
                         USER.getGrantedAuthorities(),
+                        true,
+                        true,
+                        true,
+                        true
+                ),
+                new ApplicationUser(
+                        "Derek",
+                        passwordEncoder.encode("password"),
+                        ADMIN.getGrantedAuthorities(),
                         true,
                         true,
                         true,

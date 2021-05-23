@@ -1,6 +1,5 @@
 package com.kasyno.kasyno.auth;
 
-import org.springframework.context.annotation.Bean;
 
 import java.util.Optional;
 

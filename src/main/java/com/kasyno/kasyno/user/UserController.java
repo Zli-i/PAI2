@@ -27,9 +27,9 @@ public class UserController {
         return userService.addNewUser(user);
     }
 
-    @PutMapping(path = "/login/{nickname}")
+    @PostMapping(path = "/login")
     public String login(
-            @PathVariable("nickname") String nickname,
+            @RequestParam String nickname,
             @RequestParam String password){
 
         return userService.login( nickname, password);
