@@ -1,6 +1,7 @@
 package com.kasyno.kasyno.auth;
 
 
+import com.kasyno.kasyno.security.ApplicationUserRole;
 import com.kasyno.kasyno.user.User;
 import com.kasyno.kasyno.user.UserRepository;
 import org.assertj.core.util.Lists;
@@ -33,8 +34,8 @@ public class ApplicationUserDaoService implements ApplicationUserDao{
         Optional<ApplicationUser> applicationUser = Optional.of(
                 new ApplicationUser(
                         userByNickname.get().getNickname(),
-                        passwordEncoder.encode(userByNickname.get().getPassword()),
-                        USER.getGrantedAuthorities(),
+                        userByNickname.get().getPassword(),
+                        ApplicationUserRole.valueOf(userByNickname.get().getRole()).getGrantedAuthorities(),
                         true,
                         true,
                         true,

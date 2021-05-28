@@ -1,7 +1,6 @@
 package com.kasyno.kasyno.user;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -10,6 +9,9 @@ import java.time.Period;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -24,36 +26,21 @@ public class User {
             generator = "user_sequence"
     )
     private Long id;
+    @NonNull
     private String nickname;
+    @NonNull
     private String email;
+    @NonNull
     private String password;
+    @NonNull
+    private String role;
+    @NonNull
     private LocalDate dob;
+    @NonNull
     private LocalDate joined;
 
     @Transient
     private int age;
-
-    public User() {
-    }
-
-    public User(Long id, String nickname, String email, String password, LocalDate dob, LocalDate joined) {
-        this.id = id;
-        this.nickname = nickname;
-        this.email = email;
-        this.password = password;
-        this.dob = dob;
-        this.joined = joined;
-    }
-
-    public User(String nickname, String email, String password, LocalDate dob, LocalDate joined) {
-        this.nickname = nickname;
-        this.email = email;
-        this.password = password;
-        this.dob = dob;
-        this.joined = joined;
-    }
-
-
 
     @Override
     public String toString() {
