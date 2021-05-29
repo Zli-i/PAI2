@@ -1,5 +1,6 @@
 package com.kasyno.kasyno.user;
 
+import com.kasyno.kasyno.auth.AuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ public class UserConfig {
                     "costam@gmail.com",
                     passwordEncoder.encode("password"),
                     "USER",
+                    AuthenticationProvider.LOCAL,
                     LocalDate.of(1998, Month.JANUARY, 5),
                     LocalDate.of(2021, Month.JANUARY, 5)
 
@@ -39,6 +41,7 @@ public class UserConfig {
                     "costam@gmail.com",
                     passwordEncoder.encode("password"),
                     "ADMIN",
+                    AuthenticationProvider.LOCAL,
                     LocalDate.of(1997, Month.JANUARY, 5),
                     LocalDate.of(2021, Month.JANUARY, 5)
 

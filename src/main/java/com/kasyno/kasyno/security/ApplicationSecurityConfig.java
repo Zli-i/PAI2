@@ -1,6 +1,7 @@
 package com.kasyno.kasyno.security;
 
 import com.kasyno.kasyno.auth.ApplicationUserService;
+import com.kasyno.kasyno.auth.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         this.applicationUserService = applicationUserService;
     }
 
+    @Autowired
+    private CustomOAuth2UserService oAuth2UserService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -35,6 +39,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                .and()
                 .authorizeRequests()
+                .antMatchers("/oauth2/**").permitAll()
                 .antMatchers("/","/index", "/css/*", "js/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/login","/users/register").permitAll()
                 .antMatchers(HttpMethod.GET,"/users").hasAuthority(USER_READ.getPermission())
@@ -53,7 +58,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .clearAuthentication(true)
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID", "remember-me")
-                    .logoutSuccessUrl("/login");
+                    .logoutSuccessUrl("/login")
+                .and()
+                .oauth2Login().loginPage("/login").userInfoEndpoint().userService(oAuth2UserService);
     }
 
     @Override

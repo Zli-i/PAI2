@@ -1,5 +1,6 @@
 package com.kasyno.kasyno.user;
 
+import com.kasyno.kasyno.auth.AuthenticationProvider;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +12,6 @@ import java.time.Period;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -26,21 +26,27 @@ public class User {
             generator = "user_sequence"
     )
     private Long id;
-    @NonNull
     private String nickname;
-    @NonNull
     private String email;
-    @NonNull
     private String password;
-    @NonNull
     private String role;
-    @NonNull
+    private AuthenticationProvider authProvider;
     private LocalDate dob;
-    @NonNull
     private LocalDate joined;
+
 
     @Transient
     private int age;
+
+    public User(String nickname, String email, String password, String role, AuthenticationProvider authProvider, LocalDate dob, LocalDate joined) {
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.authProvider = authProvider;
+        this.dob = dob;
+        this.joined = joined;
+    }
 
     @Override
     public String toString() {
