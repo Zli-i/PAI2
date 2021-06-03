@@ -1,11 +1,10 @@
 package com.kasyno.kasyno.user;
 
-import com.kasyno.kasyno.auth.AuthenticationProvider;
+import com.kasyno.kasyno.Oauth2.AuthenticationProvider;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.Period;
 
 @Getter
 @Setter
@@ -14,6 +13,20 @@ import java.time.Period;
 @NoArgsConstructor
 @Table(name = "users")
 public class User {
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                ", authProvider=" + authProvider +
+                ", dob=" + dob +
+                ", joined=" + joined +
+                ", age=" + age +
+                '}';
+    }
 
     @Id
     @SequenceGenerator(
@@ -48,14 +61,4 @@ public class User {
         this.joined = joined;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", nickname='" + nickname + '\'' +
-                ", email='" + email + '\'' +
-                ", dob=" + dob +
-                ", joined=" + joined +
-                '}';
-    }
 }

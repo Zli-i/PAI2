@@ -1,4 +1,4 @@
-package com.kasyno.kasyno.auth;
+package com.kasyno.kasyno.Oauth2;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 public class CustomOAuth2User implements OAuth2User {
@@ -30,5 +31,9 @@ public class CustomOAuth2User implements OAuth2User {
     @Override
     public String getName() {
         return oAuth2User.getAttribute("name");
+    }
+
+    public String getEmail() {
+        return oAuth2User.getAttribute("email");
     }
 }

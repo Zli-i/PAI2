@@ -1,7 +1,8 @@
 package com.kasyno.kasyno.security;
 
+import com.kasyno.kasyno.Oauth2.OAuth2LoginSuccessHandler;
 import com.kasyno.kasyno.auth.ApplicationUserService;
-import com.kasyno.kasyno.auth.CustomOAuth2UserService;
+import com.kasyno.kasyno.Oauth2.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import static com.kasyno.kasyno.security.ApplicationUserPermission.*;
 
@@ -32,6 +32,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomOAuth2UserService oAuth2UserService;
 
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -44,8 +47,12 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/users/login","/users/register").permitAll()
                 .antMatchers(HttpMethod.GET,"/users").hasAuthority(USER_READ.getPermission())
                 .antMatchers(HttpMethod.GET,"/users/*").hasAuthority(ADMIN_READ.getPermission())
-                .anyRequest()
-                .authenticated()
+                .anyRequest().authenticated()
+                .and()
+                .oauth2Login().loginPage("/login")
+                .userInfoEndpoint().userService(oAuth2UserService)
+                .and()
+                .successHandler(oAuth2LoginSuccessHandler)
                 .and()
                 .formLogin()
                 .loginPage("/login").permitAll()
@@ -54,13 +61,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe()
                 .and()
                 .logout()
-                    .logoutUrl("/logout")
-                    .clearAuthentication(true)
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID", "remember-me")
-                    .logoutSuccessUrl("/login")
-                .and()
-                .oauth2Login().loginPage("/login").userInfoEndpoint().userService(oAuth2UserService);
+                .logoutUrl("/logout")
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me")
+                .logoutSuccessUrl("/login");
+
+
     }
 
     @Override

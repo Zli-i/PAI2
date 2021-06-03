@@ -1,9 +1,13 @@
 package com.kasyno.kasyno.user;
 
+import com.kasyno.kasyno.Oauth2.AuthenticationProvider;
+import com.kasyno.kasyno.security.ApplicationUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,6 +43,19 @@ public class UserService {
             userRepository.save(user);
             return "Udało się zarejestrować";
         }
+    }
+
+    public void addNewOAuth2User(String email, String name) {
+        User user = new User();
+
+        user.setEmail(email);
+        user.setNickname(name);
+
+        Date input = new Date();
+        user.setJoined(input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        user.setAuthProvider(AuthenticationProvider.GOOGLE);
+        user.setRole(ApplicationUserRole.USER.name());
+        userRepository.save(user);
     }
 
     public String login(

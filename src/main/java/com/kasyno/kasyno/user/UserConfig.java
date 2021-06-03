@@ -1,6 +1,6 @@
 package com.kasyno.kasyno.user;
 
-import com.kasyno.kasyno.auth.AuthenticationProvider;
+import com.kasyno.kasyno.Oauth2.AuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
