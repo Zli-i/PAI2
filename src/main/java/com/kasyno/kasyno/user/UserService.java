@@ -58,28 +58,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String login(
-                           String nickname,
-                           String password) {
-
-        Optional<User>  user = userRepository.findUserByNickname(nickname);
-
-        if (nickname != null && nickname.length() > 0 ) {
-
-            if (user == null){
-                return "Nie ma użytkownika o takiej nazwie";
-            }
-        }
-;
-        if (password != null && password.length() > 0 && Objects.equals(user.get().getPassword(), password)) {
-
-           return "Udało się zalogować";
-        }
-        else {
-            return "Niepoprawne hasło";
-        }
-    }
-
     @Transactional
     public void updateUser(Long userId,
                            String nickname,

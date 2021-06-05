@@ -27,14 +27,6 @@ public class UserController {
         return userService.addNewUser(user);
     }
 
-    @PostMapping(path = "/login")
-    public String login(
-            @RequestParam String nickname,
-            @RequestParam String password){
-
-        return userService.login( nickname, password);
-    }
-
     @GetMapping(path = "{userId}")
     public Optional<User> getUser(@PathVariable("userId") Long userId ) {
 
