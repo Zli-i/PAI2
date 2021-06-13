@@ -1,6 +1,7 @@
 package com.kasyno.kasyno.user;
 
 import com.kasyno.kasyno.Oauth2.AuthenticationProvider;
+import jdk.jfr.Unsigned;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,11 +9,12 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity(name = "users")
 @Table(name = "users")
 public class User {
+
     @Override
     public String toString() {
         return "User{" +
@@ -46,12 +48,13 @@ public class User {
     private AuthenticationProvider authProvider;
     private LocalDate dob;
     private LocalDate joined;
+    private Long tokens;
 
 
     @Transient
     private int age;
 
-    public User(String nickname, String email, String password, String role, AuthenticationProvider authProvider, LocalDate dob, LocalDate joined) {
+    public User(String nickname, String email, String password, String role, AuthenticationProvider authProvider, LocalDate dob, LocalDate joined, Long toekns) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
@@ -59,6 +62,7 @@ public class User {
         this.authProvider = authProvider;
         this.dob = dob;
         this.joined = joined;
+        this.tokens = toekns;
     }
 
 }

@@ -20,9 +20,9 @@ public class PayPalController {
         this.payPalClient = payPalClient;
     }
 
-    @PostMapping(value = "/make/payment")
-    public Map<String, Object> makePayment(@RequestParam("sum") String sum){
-        return payPalClient.createPayment(sum);
+    @PostMapping(value = "/bundle")
+    public Map<String, Object> makePayment(@RequestParam("bundle") int bundle){
+        return payPalClient.buyTokens( bundle );
     }
 
     @PostMapping(value = "/complete/payment")

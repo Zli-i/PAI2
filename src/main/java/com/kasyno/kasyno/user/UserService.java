@@ -2,6 +2,8 @@ package com.kasyno.kasyno.user;
 
 import com.kasyno.kasyno.Oauth2.AuthenticationProvider;
 import com.kasyno.kasyno.security.ApplicationUserRole;
+import com.paypal.api.payments.Item;
+import com.paypal.api.payments.ItemList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +44,26 @@ public class UserService {
         else {
             userRepository.save(user);
             return "Udało się zarejestrować";
+        }
+    }
+
+    public void finalizeTransaction(String name, ItemList itemList){
+
+        List<Item> items = itemList.getItems();
+        Long quantity = Long.valueOf(items.get(0).getDescription());
+
+        addTokensToUser(name, quantity);
+    }
+
+    public void addTokensToUser(String name, Long sum) {
+        Optional<User> userByNickname = userRepository.findUserByNickname(name);
+
+        if (userByNickname.isPresent()) {
+
+            Long tokens = userByNickname.get().getTokens();
+            userByNickname.get().setTokens(tokens + sum);
+
+            userRepository.save(userByNickname.get());
         }
     }
 

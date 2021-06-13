@@ -32,7 +32,8 @@ public class UserConfig {
                     "USER",
                     AuthenticationProvider.LOCAL,
                     LocalDate.of(1998, Month.JANUARY, 5),
-                    LocalDate.of(2021, Month.JANUARY, 5)
+                    LocalDate.of(2021, Month.JANUARY, 5),
+                    (long)1000
 
             );
 
@@ -43,8 +44,8 @@ public class UserConfig {
                     "ADMIN",
                     AuthenticationProvider.LOCAL,
                     LocalDate.of(1997, Month.JANUARY, 5),
-                    LocalDate.of(2021, Month.JANUARY, 5)
-
+                    LocalDate.of(2021, Month.JANUARY, 5),
+                    (long)1000
             );
 
             repository.saveAll(

@@ -1,6 +1,7 @@
 package com.kasyno.kasyno.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,13 @@ public class UserController {
     public Optional<User> getUser(@PathVariable("userId") Long userId ) {
 
         return userService.getUser(userId);
+    }
+
+    @GetMapping("/logd")
+    public String getLogdUser() {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.addTokensToUser(name, Long.valueOf(500));
+        return name;
     }
 
     @PutMapping(path = "{userId}")
