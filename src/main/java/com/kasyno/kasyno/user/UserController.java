@@ -23,11 +23,6 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @PostMapping("/register")
-    public String registerNewUser(@RequestBody User user) {
-        return userService.addNewUser(user);
-    }
-
     @GetMapping(path = "{userId}")
     public Optional<User> getUser(@PathVariable("userId") Long userId ) {
 

@@ -49,6 +49,8 @@ public class User {
     private LocalDate dob;
     private LocalDate joined;
     private Long tokens;
+    private Boolean locked = false;
+    private Boolean enabled = false;
 
 
     @Transient

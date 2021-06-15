@@ -126,9 +126,9 @@ public class PayPalClient {
             APIContext context = new APIContext(clientId, clientSecret, "sandbox");
             Payment createdPayment = payment.execute(context, paymentExecution);
             if(createdPayment!=null){
-//                String name = SecurityContextHolder.getContext().getAuthentication().getName();
-//                ItemList itemList = createdPayment.getTransactions().get(0).getItemList();
-//                userService.finalizeTransaction(name, itemList);
+                String name = SecurityContextHolder.getContext().getAuthentication().getName();
+                ItemList itemList = createdPayment.getTransactions().get(0).getItemList();
+                userService.finalizeTransaction(name, itemList);
 
                 response.put("status", "success");
                 response.put("payment", createdPayment);

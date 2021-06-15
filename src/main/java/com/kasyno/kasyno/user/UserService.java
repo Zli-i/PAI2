@@ -1,27 +1,32 @@
 package com.kasyno.kasyno.user;
 
 import com.kasyno.kasyno.Oauth2.AuthenticationProvider;
+import com.kasyno.kasyno.registration.token.ConfirmationToken;
+import com.kasyno.kasyno.registration.token.ConfirmationTokenService;
 import com.kasyno.kasyno.security.ApplicationUserRole;
 import com.paypal.api.payments.Item;
 import com.paypal.api.payments.ItemList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ConfirmationTokenService confirmationTokenService) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.confirmationTokenService = confirmationTokenService;
     }
 
     public List<User> getUsers() {
@@ -32,19 +37,6 @@ public class UserService {
     public Optional<User> getUser(Long userId) {
 
         return userRepository.findById( userId );
-    }
-
-    public String addNewUser(User user) {
-        Optional<User> userByEmail = userRepository.findUserByEmail(user.getEmail());
-
-        if (userByEmail.isPresent() ) {
-            //throw new IllegalStateException("email taken");
-            return "Email jest już zajęty";
-        }
-        else {
-            userRepository.save(user);
-            return "Udało się zarejestrować";
-        }
     }
 
     public void finalizeTransaction(String name, ItemList itemList){
@@ -99,5 +91,45 @@ public class UserService {
 
             user.setEmail(email);
         }
+    }
+
+    public int enableUser(String email) {
+        return userRepository.enableUser(email);
+    }
+
+    public String signUpUser(User user) {
+        boolean userExists = userRepository
+                .findUserByEmail(user.getEmail())
+                .isPresent();
+
+        if (userExists) {
+            // TODO check of attributes are the same and
+            // TODO if email not confirmed send confirmation email.
+
+            throw new IllegalStateException("email already taken");
+        }
+
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+
+        user.setPassword(encodedPassword);
+
+        userRepository.save(user);
+
+        String token = UUID.randomUUID().toString();
+
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(45),
+                user
+        );
+
+
+        confirmationTokenService.saveConfirmationToken(
+                confirmationToken);
+
+//        TODO: SEND EMAIL
+
+        return token;
     }
 }
