@@ -1,6 +1,7 @@
 package com.kasyno.kasyno.registration;
 
 import com.kasyno.kasyno.Oauth2.AuthenticationProvider;
+import com.kasyno.kasyno.email.EmailSender;
 import com.kasyno.kasyno.registration.token.ConfirmationToken;
 import com.kasyno.kasyno.registration.token.ConfirmationTokenService;
 import com.kasyno.kasyno.security.ApplicationUserRole;
@@ -21,7 +22,7 @@ public class RegistrationService {
     private final UserService userService;
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
-    //private final EmailSender emailSender;
+    private final EmailSender emailSender;
 
     public String register(RegistrationRequest request) {
         boolean isValidEmail = emailValidator.
@@ -44,10 +45,10 @@ public class RegistrationService {
                 )
         );
 
-//        String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
-//        emailSender.send(
-//                request.getEmail(),
-//                buildEmail(request.getFirstName(), link));
+        String link = "http://localhost:8080/registration/confirm?token=" + token;
+        emailSender.send(
+                request.getEmail(),
+                buildEmail(request.getUsername(), link));
 
         return token;
     }
