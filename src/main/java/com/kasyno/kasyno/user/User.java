@@ -50,7 +50,8 @@ public class User implements UserDetails {
     private String nickname;
     private String email;
     private String password;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private ApplicationUserRole role;
     @Enumerated(EnumType.STRING)
     private AuthenticationProvider authProvider;
     private LocalDate dob;
@@ -63,7 +64,7 @@ public class User implements UserDetails {
     @Transient
     private int age;
 
-    public User(String nickname, String email, String password, String role, AuthenticationProvider authProvider, LocalDate dob, LocalDate joined, Long toekns) {
+    public User(String nickname, String email, String password, ApplicationUserRole role, AuthenticationProvider authProvider, LocalDate dob, LocalDate joined, Long toekns) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
@@ -74,7 +75,7 @@ public class User implements UserDetails {
         this.tokens = toekns;
     }
 
-    public User(String nickname, String email, String password, String role, AuthenticationProvider authProvider, LocalDate dob, LocalDate joined, Long toekns, Boolean enabled) {
+    public User(String nickname, String email, String password, ApplicationUserRole role, AuthenticationProvider authProvider, LocalDate dob, LocalDate joined, Long toekns, Boolean enabled) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
@@ -88,9 +89,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority =
-                new SimpleGrantedAuthority(role);
-        return Collections.singletonList(authority);
+        return role.getGrantedAuthorities();
     }
 
     @Override

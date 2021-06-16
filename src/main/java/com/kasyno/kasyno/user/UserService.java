@@ -1,12 +1,13 @@
 package com.kasyno.kasyno.user;
 
 import com.kasyno.kasyno.Oauth2.AuthenticationProvider;
+import com.kasyno.kasyno.email.EmailService;
 import com.kasyno.kasyno.registration.token.ConfirmationToken;
 import com.kasyno.kasyno.registration.token.ConfirmationTokenService;
 import com.kasyno.kasyno.security.ApplicationUserRole;
 import com.paypal.api.payments.Item;
 import com.paypal.api.payments.ItemList;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,18 +20,13 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
-
-    @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ConfirmationTokenService confirmationTokenService) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.confirmationTokenService = confirmationTokenService;
-    }
+    private final EmailService emailService;
 
     public List<User> getUsers() {
 
@@ -71,7 +67,7 @@ public class UserService implements UserDetailsService {
         Date input = new Date();
         user.setJoined(input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         user.setAuthProvider(AuthenticationProvider.GOOGLE);
-        user.setRole(ApplicationUserRole.USER.name());
+        user.setRole(ApplicationUserRole.USER);
         userRepository.save(user);
     }
 
@@ -101,13 +97,18 @@ public class UserService implements UserDetailsService {
     }
 
     public String signUpUser(User user) {
-        boolean userExists = userRepository
-                .findUserByEmail(user.getEmail())
-                .isPresent();
+
+        Optional<User> userByEmail = userRepository.findUserByEmail(user.getEmail());
+
+        boolean userExists = userByEmail.isPresent();
 
         if (userExists) {
-            // TODO check of attributes are the same and
-            // TODO if email not confirmed send confirmation email.
+
+            if (!userByEmail.get().getEnabled() )
+            {
+                Optional<ConfirmationToken> token = confirmationTokenService.getTokenByUser(userByEmail.get());
+                emailService.sendToken(userByEmail.get().getEmail(), userByEmail.get().getUsername(), token.get().getToken());
+            }
 
             throw new IllegalStateException("email already taken");
         }

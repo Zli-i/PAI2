@@ -1,6 +1,7 @@
 package com.kasyno.kasyno.user;
 
 import com.kasyno.kasyno.Oauth2.AuthenticationProvider;
+import com.kasyno.kasyno.security.ApplicationUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+
+import static com.kasyno.kasyno.security.ApplicationUserRole.*;
 
 @Configuration
 public class UserConfig {
@@ -29,7 +32,7 @@ public class UserConfig {
                     "Stefan",
                     "stefan@gmail.com",
                     passwordEncoder.encode("password"),
-                    "USER",
+                    USER,
                     AuthenticationProvider.LOCAL,
                     LocalDate.of(1998, Month.JANUARY, 5),
                     LocalDate.now(),
@@ -42,7 +45,7 @@ public class UserConfig {
                     "Marian",
                     "marian@gmail.com",
                     passwordEncoder.encode("password"),
-                    "ADMIN",
+                    ADMIN,
                     AuthenticationProvider.LOCAL,
                     LocalDate.of(1997, Month.JANUARY, 5),
                     LocalDate.now(),

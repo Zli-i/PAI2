@@ -1,5 +1,6 @@
 package com.kasyno.kasyno.registration.token;
 
+import com.kasyno.kasyno.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,11 @@ public class ConfirmationTokenService {
 
     public Optional<ConfirmationToken> getToken(String token) {
         return confirmationTokenRepository.findByToken(token);
+    }
+
+    public Optional<ConfirmationToken> getTokenByUser(User user)
+    {
+        return confirmationTokenRepository.findByUser(user);
     }
 
     public int setConfirmedAt(String token) {
