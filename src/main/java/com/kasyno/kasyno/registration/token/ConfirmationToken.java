@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
+@Entity(name = "ConfirmationToken")
 public class ConfirmationToken {
 
     @SequenceGenerator(

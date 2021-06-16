@@ -7,6 +7,9 @@ import com.kasyno.kasyno.security.ApplicationUserRole;
 import com.paypal.api.payments.Item;
 import com.paypal.api.payments.ItemList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +19,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -131,5 +134,13 @@ public class UserService {
 //        TODO: SEND EMAIL
 
         return token;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+            return userRepository.findUserByEmail(email)
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException(
+                                    String.format("user with email %s not found", email)));
     }
 }

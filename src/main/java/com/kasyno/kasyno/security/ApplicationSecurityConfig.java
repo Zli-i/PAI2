@@ -1,10 +1,10 @@
 package com.kasyno.kasyno.security;
 
 import com.kasyno.kasyno.Oauth2.OAuth2LoginSuccessHandler;
-import com.kasyno.kasyno.auth.ApplicationUserService;
 import com.kasyno.kasyno.Oauth2.CustomOAuth2UserService;
 import com.kasyno.kasyno.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.kasyno.kasyno.jwt.JwtVerifier;
+import com.kasyno.kasyno.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,12 +25,13 @@ import static com.kasyno.kasyno.security.ApplicationUserPermission.*;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
-    private final ApplicationUserService applicationUserService;
+    //private final ApplicationUserService applicationUserService;
+    private final UserService userService;
 
     @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, ApplicationUserService applicationUserService) {
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService) {
         this.passwordEncoder = passwordEncoder;
-        this.applicationUserService = applicationUserService;
+        this.userService = userService;
     }
 
     @Autowired
@@ -87,7 +88,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder);
-        provider.setUserDetailsService(applicationUserService);
+        provider.setUserDetailsService(userService);
         return provider;
     }
 }

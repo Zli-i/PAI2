@@ -27,25 +27,27 @@ public class UserConfig {
         return args -> {
             User stefan = new User(
                     "Stefan",
-                    "costam@gmail.com",
+                    "stefan@gmail.com",
                     passwordEncoder.encode("password"),
                     "USER",
                     AuthenticationProvider.LOCAL,
                     LocalDate.of(1998, Month.JANUARY, 5),
-                    LocalDate.of(2021, Month.JANUARY, 5),
-                    (long)1000
+                    LocalDate.now(),
+                    (long)1000,
+                    true
 
             );
 
             User marian = new User(
                     "Marian",
-                    "costam@gmail.com",
+                    "marian@gmail.com",
                     passwordEncoder.encode("password"),
                     "ADMIN",
                     AuthenticationProvider.LOCAL,
                     LocalDate.of(1997, Month.JANUARY, 5),
-                    LocalDate.of(2021, Month.JANUARY, 5),
-                    (long)1000
+                    LocalDate.now(),
+                    (long)1000,
+                    true
             );
 
             repository.saveAll(
