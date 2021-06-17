@@ -34,7 +34,9 @@
                 align="center"
                 justify="center"
             >
-                <v-btn dark>
+                <v-btn 
+                dark
+                >
                     Dołącz do gry
                 </v-btn>
             </v-row>
