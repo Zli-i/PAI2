@@ -1,6 +1,7 @@
 package com.kasyno.kasyno.Oauth2;
 
 
+import com.kasyno.kasyno.security.ApplicationUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -25,12 +26,12 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return oAuth2User.getAuthorities();
+        return ApplicationUserRole.ADMIN.getGrantedAuthorities();
     }
 
     @Override
     public String getName() {
-        return oAuth2User.getAttribute("name");
+        return oAuth2User.getAttribute("email");
     }
 
     public String getEmail() {

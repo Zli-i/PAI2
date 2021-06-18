@@ -32,7 +32,6 @@ public class UserController {
     @GetMapping("/logd")
     public String getLogdUser() {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        userService.addTokensToUser(name, Long.valueOf(500));
         return name;
     }
 

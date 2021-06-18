@@ -38,16 +38,16 @@ public class UserService implements UserDetailsService {
         return userRepository.findById( userId );
     }
 
-    public void finalizeTransaction(String name, ItemList itemList){
+    public void finalizeTransaction(String email, ItemList itemList){
 
         List<Item> items = itemList.getItems();
         Long quantity = Long.valueOf(items.get(0).getDescription());
 
-        addTokensToUser(name, quantity);
+        addTokensToUser(email, quantity);
     }
 
-    public void addTokensToUser(String name, Long sum) {
-        Optional<User> userByNickname = userRepository.findUserByNickname(name);
+    public void addTokensToUser(String email, Long sum) {
+        Optional<User> userByNickname = userRepository.findUserByEmail(email);
 
         if (userByNickname.isPresent()) {
 

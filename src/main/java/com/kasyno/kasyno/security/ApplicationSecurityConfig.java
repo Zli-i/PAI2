@@ -46,10 +46,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                .and()
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .oauth2Login()
+                .loginPage("/login")
+                .userInfoEndpoint().userService(oAuth2UserService)
                 .and()
-                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
-                .addFilterAfter(new JwtVerifier(), JwtUsernameAndPasswordAuthenticationFilter.class)
+                .successHandler(oAuth2LoginSuccessHandler)
+                .and()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
+//                .addFilterAfter(new JwtVerifier(), JwtUsernameAndPasswordAuthenticationFilter.class)
 
                 .authorizeRequests()
                 .antMatchers("/oauth2/**").permitAll()
@@ -60,12 +66,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/users").hasAuthority(USER_READ.getPermission())
                 .antMatchers(HttpMethod.GET,"/users/*").hasAuthority(ADMIN_READ.getPermission())
                 .anyRequest().authenticated()
-                .and()
-                .oauth2Login()
-                .loginPage("/login")
-                .userInfoEndpoint().userService(oAuth2UserService)
-                .and()
-                .successHandler(oAuth2LoginSuccessHandler);
+                .and().formLogin();
+
 
     }
 
