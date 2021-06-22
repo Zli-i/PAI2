@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -59,8 +60,6 @@ public class User implements UserDetails {
     private Long tokens;
     private Boolean locked = false;
     private Boolean enabled = false;
-
-
     @Transient
     private int age;
 
@@ -85,6 +84,11 @@ public class User implements UserDetails {
         this.joined = joined;
         this.tokens = toekns;
         this.enabled = enabled;
+    }
+
+    public Integer getAge()
+    {
+        return Period.between(dob, LocalDate.now()).getYears();
     }
 
     @Override

@@ -66,7 +66,12 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/users").hasAuthority(USER_READ.getPermission())
                 .antMatchers(HttpMethod.GET,"/users/*").hasAuthority(ADMIN_READ.getPermission())
                 .anyRequest().authenticated()
-                .and().formLogin();
+                .and()
+                .formLogin()
+                .loginPage("/login").permitAll()
+                .defaultSuccessUrl("/users", true)
+                .and()
+                .rememberMe();
 
 
     }
