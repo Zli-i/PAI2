@@ -34,7 +34,7 @@
                 align="center"
                 justify="center"
             >
-                <v-btn 
+                <v-btn v-on:click="TokenTest"
                 dark
                 >
                     Dołącz do gry
@@ -48,6 +48,9 @@
 </template>
 
 <script>
+import axios from 'axios'
+import endpoint from '@/endpoint.json';
+
   export default {
     data: () => ({
         pokoje : [
@@ -89,5 +92,21 @@
             }
         ]
     }),
+    methods:
+    {
+        async TokenTest()
+        {
+        console.log(localStorage.getItem('token'))
+
+            const response = await axios.get(`${endpoint.url}/users`, {
+                headers: {
+                    Authorization: localStorage.getItem('token')
+                }
+        }
+        );
+
+        console.log(response)
+        }
+    }
   }
 </script>
