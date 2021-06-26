@@ -123,16 +123,18 @@ public class OAuth2AuthenticationFilter extends GenericFilterBean {
 
 
                         String token = Jwts.builder()
-                                .setSubject(name)
+                                .setSubject(email)
                                 .claim("authorities", ApplicationUserRole.USER.getGrantedAuthorities())
                                 .setIssuedAt(new Date())
                                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2)))
                                 .signWith(Keys.hmacShaKeyFor(key.getBytes()))
                                 .compact();
 
-                        response.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        response.getWriter().println(objectMapper.writeValueAsString(new TokenResponse(token)));
+//                        response.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+//                        ObjectMapper objectMapper = new ObjectMapper();
+//                        response.getWriter().println(objectMapper.writeValueAsString(new TokenResponse(token)));
+
+                        response.addHeader("Authorization", "Bearer " + token);
                 }
                 else
                 {
