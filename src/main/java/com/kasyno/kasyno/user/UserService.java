@@ -68,6 +68,7 @@ public class UserService implements UserDetailsService {
         user.setJoined(input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         user.setAuthProvider(AuthenticationProvider.GOOGLE);
         user.setRole(ApplicationUserRole.USER);
+        user.setTokens(1000L);
         userRepository.save(user);
     }
 
