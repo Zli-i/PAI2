@@ -83,6 +83,7 @@ public class OAuth2AuthenticationFilter extends GenericFilterBean {
                         GoogleIdToken.Payload payload = idToken.getPayload();
                         String email = payload.getEmail();
                         String name = (String) payload.get("name");
+                        String token;
 
                         Optional<User> userByEmail = userRepository.findUserByEmail(email);
 
@@ -90,10 +91,13 @@ public class OAuth2AuthenticationFilter extends GenericFilterBean {
                         {
                                 // Register
                                 userService.addNewOAuth2User(email, name);
+                                token = jwtGenerator.generateToken(email, ApplicationUserRole.USER.getGrantedAuthorities());
+                        }
+                        else
+                        {
+                                token = jwtGenerator.generateToken(email, userByEmail.get().getAuthorities());
                         }
 
-
-                        String token = jwtGenerator.generateToken(email, ApplicationUserRole.USER.getGrantedAuthorities());
                         response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
                 }
                 else
@@ -109,54 +113,6 @@ public class OAuth2AuthenticationFilter extends GenericFilterBean {
                 return requestMatcher.matches((HttpServletRequest) request);
         }
 
-//        private OAuth2AuthenticationToken authenticate(HttpServletRequest request, HttpServletResponse response) {
-//
-//                String code;
-//
-//                try {
-//                        code = readCode(request);
-//                } catch (IOException e) {
-//                        throw new IllegalArgumentException("authentication_code_missing");
-//                }
-//
-//                Map<String, String> variables = requestMatcher.matcher(request).getVariables();
-//                String registrationId = variables.get("registrationId");
-//                ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(registrationId);
-//
-//                OAuth2AuthorizationRequest authorizationRequest = authorizationRequestResolver.resolve(request, registrationId);
-//
-//                OAuth2AuthorizationResponse authorizationResponse = OAuth2AuthorizationResponse
-//                        .success(code)
-//                        .redirectUri("postmessage")
-//                        .state(authorizationRequest.getState())
-//                        .build();
-//
-//                OAuth2LoginAuthenticationToken authenticationRequest = new OAuth2LoginAuthenticationToken(
-//                        clientRegistration, new OAuth2AuthorizationExchange(authorizationRequest, authorizationResponse));
-//
-//
-//
-//                Authentication authenticate = authenticationManager.authenticate(authenticationRequest);
-//                OAuth2LoginAuthenticationToken authenticationResult = (OAuth2LoginAuthenticationToken) authenticate;
-//
-//
-//                String username = authenticationResult.getPrincipal().getName();
-//                String email = authenticationResult.getPrincipal().getAttribute("email");
-//                // TODO: Stwórz użytkownika jeśli nie istnieje
-//
-//                OAuth2AuthenticationToken oauth2Authentication = new OAuth2AuthenticationToken(
-//                        authenticationResult.getPrincipal(),
-//                        ApplicationUserRole.USER.getGrantedAuthorities(),
-//                        authenticationResult.getClientRegistration().getRegistrationId());
-//
-//                OAuth2AuthorizedClient authorizedClient = new OAuth2AuthorizedClient(
-//                        authenticationResult.getClientRegistration(),
-//                        oauth2Authentication.getName(),
-//                        authenticationResult.getAccessToken(),
-//                        authenticationResult.getRefreshToken());
-//
-//                return oauth2Authentication;
-//        }
 
 
         private String readCode(HttpServletRequest request) throws IOException {

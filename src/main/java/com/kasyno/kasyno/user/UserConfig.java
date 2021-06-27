@@ -53,8 +53,20 @@ public class UserConfig {
                     true
             );
 
+            User seba = new User(
+                    "Sebastian",
+                    "sebastianzaw12@gmail.com",
+                    passwordEncoder.encode("password"),
+                    ADMIN,
+                    AuthenticationProvider.LOCAL,
+                    LocalDate.of(1997, Month.JANUARY, 5),
+                    LocalDate.now(),
+                    (long)1000,
+                    true
+            );
+
             repository.saveAll(
-                    List.of(stefan, marian)
+                    List.of(stefan, marian, seba)
             );
         };
     }
