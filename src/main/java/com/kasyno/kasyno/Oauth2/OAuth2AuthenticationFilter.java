@@ -2,47 +2,23 @@ package com.kasyno.kasyno.Oauth2;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.kasyno.kasyno.jwt.JwtConfig;
+import com.kasyno.kasyno.jwt.JwtGenerator;
 import com.kasyno.kasyno.security.ApplicationUserRole;
 import com.kasyno.kasyno.user.User;
 import com.kasyno.kasyno.user.UserRepository;
 import com.kasyno.kasyno.user.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthorizationCodeAuthenticationProvider;
-import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
-import org.springframework.security.oauth2.client.oidc.authentication.OidcAuthorizationCodeAuthenticationProvider;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationExchange;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponse;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -51,31 +27,29 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
-@JsonSerialize
-class TokenResponse {
-
-        String token;
-        public TokenResponse(String token) {
-                this.token = token;
-        }
-}
 
 @Component
 public class OAuth2AuthenticationFilter extends GenericFilterBean {
 
         private AntPathRequestMatcher requestMatcher = new AntPathRequestMatcher("/auth/{registrationId}", HttpMethod.POST.name());
 
-        public OAuth2AuthenticationFilter(UserService userService, UserRepository userRepository) {
+
+        private final UserService userService;
+        private final UserRepository userRepository;
+        private final JwtGenerator jwtGenerator;
+        private final JwtConfig jwtConfig;
+
+        public OAuth2AuthenticationFilter(UserService userService, UserRepository userRepository, JwtGenerator jwtGenerator, JwtConfig jwtConfig) {
                 this.userService = userService;
                 this.userRepository = userRepository;
+                this.jwtGenerator = jwtGenerator;
+                this.jwtConfig = jwtConfig;
         }
-
-        private UserService userService;
-        private UserRepository userRepository;
 
 
         @Override
@@ -118,23 +92,9 @@ public class OAuth2AuthenticationFilter extends GenericFilterBean {
                                 userService.addNewOAuth2User(email, name);
                         }
 
-                        String key = "mojekasynojestzajebistemojekasynojestzajebistemojekasynojestzajebiste";
 
-
-
-                        String token = Jwts.builder()
-                                .setSubject(email)
-                                .claim("authorities", ApplicationUserRole.USER.getGrantedAuthorities())
-                                .setIssuedAt(new Date())
-                                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2)))
-                                .signWith(Keys.hmacShaKeyFor(key.getBytes()))
-                                .compact();
-
-//                        response.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-//                        ObjectMapper objectMapper = new ObjectMapper();
-//                        response.getWriter().println(objectMapper.writeValueAsString(new TokenResponse(token)));
-
-                        response.addHeader("Authorization", "Bearer " + token);
+                        String token = jwtGenerator.generateToken(email, ApplicationUserRole.USER.getGrantedAuthorities());
+                        response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
                 }
                 else
                 {
