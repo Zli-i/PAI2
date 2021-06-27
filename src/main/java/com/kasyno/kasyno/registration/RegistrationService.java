@@ -9,6 +9,7 @@ import com.kasyno.kasyno.security.ApplicationUserRole;
 import com.kasyno.kasyno.user.User;
 import com.kasyno.kasyno.user.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
