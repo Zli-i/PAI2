@@ -7,7 +7,7 @@
 </template>
 
 <script>
-//import axios from 'axios';
+import axios from 'axios';
 import endpoint from '@/endpoint.json';
 
 export default {
@@ -24,16 +24,18 @@ export default {
         console.log("PayerID", PayerID);
         console.log(`${endpoint.url}/paypal/complete/payment?paymentId=`+paymentId+"&PayerID="+PayerID);
 
-        /*const response = await axios.post(`${endpoint.url}/paypal/complete/payment/`, {
+        const response = await axios.post(`${endpoint.url}/paypal/complete/payment?paymentId=`+paymentId+"&PayerID="+PayerID,{} ,{
             headers: {
                     Authorization: localStorage.getItem('token')
             }
-        }, { params: {
-            paymentId,
-            PayerID
-        }})
+        }, ).catch((e) => {
+            console.log(e);
+            console.log(response)
+            this.$router.push("/")
+            location.reload()
+        })
 
-        console.log(response)*/
+        
     }
 }
 </script>

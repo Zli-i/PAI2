@@ -77,8 +77,10 @@ export default {
         async handlePaypalRequest(bundle) 
         {
             console.log("bundle",bundle);
+            console.log(localStorage.getItem('token'))
 
-            const response = await axios.post(`${endpoint.url}/paypal/bundle?bundle=` + bundle, {
+            const response = await axios.post(`${endpoint.url}/paypal/bundle?bundle=` + bundle, {} ,
+            { 
                 headers: {
                     Authorization: localStorage.getItem('token')
                 }
