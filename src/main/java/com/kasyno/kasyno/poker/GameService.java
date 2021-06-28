@@ -120,14 +120,42 @@ public class GameService {
         {
             Game game = byId.get();
 
-            if(game.getGameState() == GameState.WAITING_FOR_PLAYERS)
+            if(game.getGameState() == GameState.WAITING_FOR_PLAYERS && game.getPlayers() > 1)
             {
-                //gameRepository.updateGameState(game.getId(), GameState.DEAL);
                 game.setGameState(GameState.DEAL);
                 if (game.getPlayer1() != null) game.getPlayer1().setPlayerStatus(PlayerStatus.PLAYING);
                 if (game.getPlayer2() != null) game.getPlayer2().setPlayerStatus(PlayerStatus.PLAYING);
                 if (game.getPlayer3() != null) game.getPlayer3().setPlayerStatus(PlayerStatus.PLAYING);
                 if (game.getPlayer4() != null) game.getPlayer4().setPlayerStatus(PlayerStatus.PLAYING);
+                gameRepository.save(game);
+                dealCards(game.getId());
+            }
+        }
+    }
+
+    private void dealCards(Long id){
+
+        Optional<Game> byId = gameRepository.findById(id);
+
+        if(byId.isPresent())
+        {
+            Game game = byId.get();
+            List<String> deck = game.getDeck();
+
+            if(game.getGameState() == GameState.DEAL)
+            {
+                if (game.getPlayer1() != null && game.getPlayer1().getPlayerStatus() != PlayerStatus.WAITING) {
+                    game.getPlayer1().getDeck().add(deck.remove(0));
+                }
+                if (game.getPlayer2() != null && game.getPlayer2().getPlayerStatus() != PlayerStatus.WAITING) {
+                    game.getPlayer2().getDeck().add(deck.remove(0));
+                }
+                if (game.getPlayer3() != null && game.getPlayer3().getPlayerStatus() != PlayerStatus.WAITING) {
+                    game.getPlayer3().getDeck().add(deck.remove(0));
+                }
+                if (game.getPlayer4() != null && game.getPlayer4().getPlayerStatus() != PlayerStatus.WAITING) {
+                    game.getPlayer4().getDeck().add(deck.remove(0));
+                }
                 gameRepository.save(game);
             }
         }

@@ -41,6 +41,7 @@ public class PlayerService {
         playerInfo.setName(player.getUser().getNickname());
         playerInfo.setTokens(player.getTokens());
         playerInfo.setStatus(player.getPlayerStatus().name());
+        playerInfo.setDeck(player.getDeck());
         return playerInfo;
     }
 }

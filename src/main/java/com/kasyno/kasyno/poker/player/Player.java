@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,5 +36,7 @@ public class Player {
     private Long tokens;
     @Enumerated(EnumType.STRING)
     private PlayerStatus playerStatus;
+    @ElementCollection
+    private List<String> deck = new LinkedList<String>();
 
 }
