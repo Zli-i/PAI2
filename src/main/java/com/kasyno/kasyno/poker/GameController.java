@@ -38,4 +38,9 @@ public class GameController {
     {
         return gameService.getGameInfo(Id);
     }
+    @PostMapping("/start")
+    public void startGame(@RequestParam("Id") Long Id)
+    {
+        gameService.startGame(Id);
+    }
 }

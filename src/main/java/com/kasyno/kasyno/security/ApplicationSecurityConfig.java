@@ -65,7 +65,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/oauth2/**").permitAll()
                 .antMatchers("/auth/**").permitAll()
-                .antMatchers("/paypal/**").permitAll()
                 .antMatchers("/","/index", "/css/*", "js/*", "/login.html").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/registration/**").permitAll()

@@ -1,8 +1,10 @@
 package com.kasyno.kasyno.poker;
 
+import com.kasyno.kasyno.poker.deck.Decks;
 import com.kasyno.kasyno.poker.player.Player;
 import com.kasyno.kasyno.poker.player.PlayerRepository;
 import com.kasyno.kasyno.poker.player.PlayerService;
+import com.kasyno.kasyno.poker.player.PlayerStatus;
 import com.kasyno.kasyno.user.User;
 import com.kasyno.kasyno.user.UserRepository;
 import com.kasyno.kasyno.user.UserService;
@@ -41,6 +43,7 @@ public class GameService {
                 Game game = new Game();
                 game.setMinTokenAmount(minTokenAmount);
                 game.setPlayer1(player);
+                game.setDeck(Decks.getStandardDeckS());
                 Game save = gameRepository.save(game);
 
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -96,6 +99,7 @@ public class GameService {
             gameInfo.setGameState(game.getGameState().name());
             gameInfo.setJackpot(game.getJackpot());
             gameInfo.setPlayers(game.getPlayers());
+            gameInfo.setPlayerTurn(game.getPlayerTurn());
 
             if (game.getPlayer1() != null) gameInfo.setPlayer1(playerService.getPlayerInfo(game.getPlayer1()));
             if (game.getPlayer2() != null) gameInfo.setPlayer2(playerService.getPlayerInfo(game.getPlayer2()));
@@ -106,5 +110,26 @@ public class GameService {
         }
 
         return null;
+    }
+
+    public void startGame(Long id) {
+
+        Optional<Game> byId = gameRepository.findById(id);
+
+        if(byId.isPresent())
+        {
+            Game game = byId.get();
+
+            if(game.getGameState() == GameState.WAITING_FOR_PLAYERS)
+            {
+                //gameRepository.updateGameState(game.getId(), GameState.DEAL);
+                game.setGameState(GameState.DEAL);
+                if (game.getPlayer1() != null) game.getPlayer1().setPlayerStatus(PlayerStatus.PLAYING);
+                if (game.getPlayer2() != null) game.getPlayer2().setPlayerStatus(PlayerStatus.PLAYING);
+                if (game.getPlayer3() != null) game.getPlayer3().setPlayerStatus(PlayerStatus.PLAYING);
+                if (game.getPlayer4() != null) game.getPlayer4().setPlayerStatus(PlayerStatus.PLAYING);
+                gameRepository.save(game);
+            }
+        }
     }
 }

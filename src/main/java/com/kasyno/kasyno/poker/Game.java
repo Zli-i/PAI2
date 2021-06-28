@@ -1,5 +1,6 @@
 package com.kasyno.kasyno.poker;
 
+import com.kasyno.kasyno.poker.deck.Card;
 import com.kasyno.kasyno.poker.player.Player;
 import io.swagger.models.auth.In;
 import lombok.Getter;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,11 +44,14 @@ public class Game {
     @JoinColumn(name = "player4_id")
     private Player player4;
 
+    private Integer playerTurn;
     @Enumerated(EnumType.STRING)
     private GameState gameState = GameState.WAITING_FOR_PLAYERS;
-
+    @ElementCollection
+    private List<String > deck = new LinkedList<>();
     @Transient
     private Integer players;
+
 
     public Integer getPlayers(){
 

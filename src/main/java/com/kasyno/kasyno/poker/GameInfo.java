@@ -14,6 +14,7 @@ public class GameInfo {
     private Long jackpot;
     private String gameState;
     private Integer players;
+    private Integer playerTurn;
     private PlayerInfo player1;
     private PlayerInfo player2;
     private PlayerInfo player3;
