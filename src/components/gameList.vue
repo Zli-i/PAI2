@@ -4,8 +4,8 @@
         justify="center">
 
       <v-col
-        v-for="pokoj in pokoje"
-        :key="pokoj"
+        v-for="(game, index) in gameList"
+        :key="index"
         cols="6"
         md="4"
         align="center"
@@ -21,20 +21,17 @@
         <v-container
         fill-height
         >
-            <v-row
-            v-for="gracz in pokoj.gracze"
-                :key="gracz"
+            <v-row 
                 align="center"
                 justify="center">
             >
-                {{gracz.nick}}
+                {{game.player1.user.nickname}}
             </v-row>
             <v-row 
-                v-if="pokoj.gracze.length < 4"
                 align="center"
                 justify="center"
             >
-                <v-btn v-on:click="TokenTest"
+                <v-btn v-on:click="joinToGame(1)"
                 dark
                 >
                     Dołącz do gry
@@ -90,7 +87,9 @@ import endpoint from '@/endpoint.json';
             {id: 7, gracze : [
                 ]
             }
-        ]
+        ],
+        gamesList : []
+
     }),
     methods:
     {
@@ -106,7 +105,65 @@ import endpoint from '@/endpoint.json';
         );
 
         console.log(response)
+        },
+        async joinToGame(id)
+        {
+            console.log(id)
+            const response = await axios.post(`${endpoint.url}/games/join?Id=` + id,
+                {},
+                {
+                    headers: {
+                    Authorization: localStorage.getItem('token')
+                    }
+                }
+            ).then(
+                this.$router.push( {path: 'game', query: {room_id: id} })
+            ).catch(
+                (e) => {
+                    console.log("Za mała ilość tokenów "+e);
+                }
+            )
+
+            console.log(response)
+        },
+
+        async createGame()
+        {
+            console.log("create game")
+
+            const response = await axios.post(`${endpoint.url}/games/create?minTokenAmount=` + 200, 
+                {},
+                {
+                    headers: {
+                    Authorization: localStorage.getItem('token')
+                    }
+                }
+            )
+
+            console.log(response)
+
+
         }
+    },
+    async created() {
+        console.log("token", localStorage.getItem('token'))
+        const response = await axios.get(`${endpoint.url}/games`, {
+                headers: {
+                    Authorization: localStorage.getItem('token')
+                }
+        }
+        );
+        this.gamesList = response.data;
+        console.log(response.data[0].player1.user.nickname)
+        console.log(this.gamesList)
+        /*response.data.forEach((dat) => {
+            console.log(dat.id)
+            this.gamesList = dat
+        })
+        this.gamesList.forEach((game) =>
+        {
+            console.log(game.id)
+        })*/
     }
   }
 </script>

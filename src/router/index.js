@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import paypalSuccess from '../views/paypalSuccess.vue'
+import Game from '../views/Game.vue'
 
 Vue.use(VueRouter)
 
@@ -27,10 +28,16 @@ const routes = [
 
   },
   {
-    path: '/paypalSuccess',
+    path: '/paypalSuccess/',
     name: 'paypalSuccess',
     component : paypalSuccess
+  },
+  {
+    path: '/Game/',
+    name: 'Game',
+    component: Game
   }
+
 ]
 
 const router = new VueRouter({
