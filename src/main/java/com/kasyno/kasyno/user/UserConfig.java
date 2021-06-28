@@ -34,7 +34,6 @@ public class UserConfig {
                     passwordEncoder.encode("password"),
                     USER,
                     AuthenticationProvider.LOCAL,
-                    LocalDate.of(1998, Month.JANUARY, 5),
                     LocalDate.now(),
                     (long)1000,
                     true
@@ -47,7 +46,6 @@ public class UserConfig {
                     passwordEncoder.encode("password"),
                     ADMIN,
                     AuthenticationProvider.LOCAL,
-                    LocalDate.of(1997, Month.JANUARY, 5),
                     LocalDate.now(),
                     (long)1000,
                     true
@@ -59,7 +57,6 @@ public class UserConfig {
                     passwordEncoder.encode("password"),
                     ADMIN,
                     AuthenticationProvider.LOCAL,
-                    LocalDate.of(1997, Month.JANUARY, 5),
                     LocalDate.now(),
                     (long)1000,
                     true

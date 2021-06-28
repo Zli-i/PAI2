@@ -44,7 +44,6 @@ public class RegistrationService {
                         request.getPassword(),
                         USER,
                         LOCAL,
-                        LocalDate.of(1998, Month.JANUARY, 5),
                         LocalDate.now(),
                         (long)1000
                 )
