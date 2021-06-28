@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class GameController {
     }
 
     @GetMapping
-    public List<Game> getUsers() {
+    public List<GameIdAndPlayers> getUsers() {
         return gameService.getGames();
     }
 

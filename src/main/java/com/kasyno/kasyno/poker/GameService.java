@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +29,8 @@ public class GameService {
     private final UserService userService;
     private final PlayerService playerService;
 
-    public List<Game> getGames() {
-        return gameRepository.findAll();
+    public List<GameIdAndPlayers> getGames() {
+        return gameRepository.findAllByOrderById();
     }
 
     public Long createGame(Long minTokenAmount, HttpServletResponse response) {

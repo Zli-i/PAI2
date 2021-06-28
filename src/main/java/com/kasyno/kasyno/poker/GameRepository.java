@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+
 @Repository
 public interface GameRepository extends JpaRepository<Game,Long> {
 
@@ -30,8 +33,6 @@ public interface GameRepository extends JpaRepository<Game,Long> {
     @Query("UPDATE Game g " + "SET g.player4 = ?2 " + "WHERE g.id = ?1")
     void updatePlayer4(Long id, Player player4);
 
-    @Transactional
-    @Modifying
-    @Query("UPDATE Game g " + "SET g.gameState = ?2 " + "WHERE g.id = ?1")
-    void updateGameState(Long id, GameState gameState);
+
+    List<GameIdAndPlayers> findAllByOrderById();
 }
