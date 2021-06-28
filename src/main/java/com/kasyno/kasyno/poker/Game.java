@@ -30,6 +30,7 @@ public class Game {
     private Long id;
     private Long jackpot = 0L;
     private Long minTokenAmount;
+    private Long minCall=20L;
 
     @OneToOne
     @JoinColumn(name = "player1_id")
@@ -44,13 +45,14 @@ public class Game {
     @JoinColumn(name = "player4_id")
     private Player player4;
 
-    private Integer playerTurn;
+    private Integer playerTurn = 0;
     @Enumerated(EnumType.STRING)
     private GameState gameState = GameState.WAITING_FOR_PLAYERS;
     @ElementCollection
     private List<String > deck = new LinkedList<>();
     @Transient
     private Integer players;
+    private Integer activePlayers = 0;
 
 
     public Integer getPlayers(){

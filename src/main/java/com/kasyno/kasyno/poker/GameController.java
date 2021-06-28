@@ -43,4 +43,9 @@ public class GameController {
     {
         gameService.startGame(Id);
     }
+    @PostMapping("/call")
+    public void call(@RequestParam("Id") Long id, Principal principal){
+        gameService.call(id, principal);
+    }
+
 }
