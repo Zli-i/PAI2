@@ -38,6 +38,24 @@ public class UserService implements UserDetailsService {
         return userRepository.findById( userId );
     }
 
+    public Optional<User> getUserByEmail(String email) {
+
+        return userRepository.findUserByEmail(email);
+    }
+
+    public boolean takeTokensFromUser(Long tokens, Long userId){
+
+        User one = userRepository.getOne(userId);
+        Long userTokens = one.getTokens();
+        if(userTokens >= tokens && tokens > 0)
+        {
+            one.setTokens(userTokens-tokens);
+            userRepository.save(one);
+            return true;
+        }
+        return false;
+    }
+
     public void finalizeTransaction(String email, ItemList itemList){
 
         List<Item> items = itemList.getItems();

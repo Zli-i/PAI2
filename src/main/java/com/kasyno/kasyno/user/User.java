@@ -24,17 +24,14 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        return "User{" +
+        return
                 "id=" + id +
                 ", nickname='" + nickname + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
                 ", authProvider=" + authProvider +
                 ", dob=" + dob +
-                ", joined=" + joined +
-                ", age=" + age +
-                '}';
+                ", joined=" + joined;
     }
 
     @Id

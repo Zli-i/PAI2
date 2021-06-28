@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +31,15 @@ public class UserController {
     }
 
     @GetMapping("/logd")
-    public String getLogdUser() {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        return name;
+    public UserData getLogdUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userByEmail = userService.getUserByEmail(email);
+        if(userByEmail.isPresent())
+        {
+            User user = userByEmail.get();
+            return new UserData(user.getId(), user.getNickname(), user.getEmail(), user.getRole().name(), user.getAuthProvider().name(), user.getJoined(), user.getTokens());
+        }
+        return null;
     }
 
     @PutMapping(path = "{userId}")

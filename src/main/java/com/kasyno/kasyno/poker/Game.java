@@ -1,5 +1,6 @@
 package com.kasyno.kasyno.poker;
 
+import com.kasyno.kasyno.poker.player.Player;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,10 +24,24 @@ public class Game {
             generator = "confirmation_token_sequence"
     )
     private Long id;
-    private Long jackpot;
-    private int playersCount;
-    @Enumerated
-    private GameState gameState;
+    private Long jackpot = 0L;
+    private Long minTokenAmount;
+
+    @OneToOne
+    @JoinColumn(name = "player1_id")
+    private Player player1;
+    @OneToOne
+    @JoinColumn(name = "player2_id")
+    private Player player2;
+    @OneToOne
+    @JoinColumn(name = "player3_id")
+    private Player player3;
+    @OneToOne
+    @JoinColumn(name = "player4_id")
+    private Player player4;
+
+    @Enumerated(EnumType.STRING)
+    private GameState gameState = GameState.WAITING_FOR_PLAYERS;
 
 
 }

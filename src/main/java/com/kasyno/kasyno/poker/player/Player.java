@@ -28,12 +28,6 @@ public class Player {
     @ManyToOne
     @JoinColumn(
             nullable = false,
-            name = "game_id"
-    )
-    private Game game;
-    @ManyToOne
-    @JoinColumn(
-            nullable = false,
             name = "user_id"
     )
     private User user;
