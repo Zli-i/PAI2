@@ -1,0 +1,16 @@
+package com.kasyno.kasyno.poker.player;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class PlayerInfo {
+
+    private String name;
+    private Long tokens;
+    private String status;
+}

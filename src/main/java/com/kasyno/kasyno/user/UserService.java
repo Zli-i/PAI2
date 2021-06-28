@@ -43,9 +43,9 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByEmail(email);
     }
 
-    public boolean takeTokensFromUser(Long tokens, Long userId){
+    public boolean takeTokensFromUser(Long tokens, String email){
 
-        User one = userRepository.getOne(userId);
+        User one = userRepository.findUserByEmail(email).get();
         Long userTokens = one.getTokens();
         if(userTokens >= tokens && tokens > 0)
         {

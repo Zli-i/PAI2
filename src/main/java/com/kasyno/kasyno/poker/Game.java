@@ -1,6 +1,7 @@
 package com.kasyno.kasyno.poker;
 
 import com.kasyno.kasyno.poker.player.Player;
+import io.swagger.models.auth.In;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -42,6 +43,21 @@ public class Game {
 
     @Enumerated(EnumType.STRING)
     private GameState gameState = GameState.WAITING_FOR_PLAYERS;
+
+    @Transient
+    private Integer players;
+
+    public Integer getPlayers(){
+
+        Integer players = 0;
+
+        if(player1 != null) players++;
+        if(player2 != null) players++;
+        if(player3 != null) players++;
+        if(player4 != null) players++;
+
+        return players;
+    }
 
 
 }

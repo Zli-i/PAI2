@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,26 +34,77 @@ public class GameService {
 
         if (userByEmail.isPresent()) {
             User user = userByEmail.get();
-            Optional<Player> playerByUser = playerService.getPlayerByUser(user);
+            Player player = playerService.createPlayer(user, minTokenAmount);
 
-            if (minTokenAmount > 0 && !playerByUser.isPresent()) {
-                Player player = playerService.createPlayer(user, minTokenAmount);
+            if (minTokenAmount > 0 && player != null) {
 
-                if(player != null) {
+                Game game = new Game();
+                game.setMinTokenAmount(minTokenAmount);
+                game.setPlayer1(player);
+                Game save = gameRepository.save(game);
 
-                    Game game = new Game();
-                    game.setMinTokenAmount(minTokenAmount);
-                    game.setPlayer1(player);
-                    Game save = gameRepository.save(game);
-
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    return save.getId();
-                }
+                response.setStatus(HttpServletResponse.SC_OK);
+                return save.getId();
             }
         }
 
 
         response.setStatus(HttpServletResponse.SC_CONFLICT);
         return -1L;
+    }
+
+    public void joinGame(Long gameId, Principal principal, HttpServletResponse response){
+
+        Optional<Game> gameById = gameRepository.findById(gameId);
+        User user = userService.getUserByEmail(principal.getName()).get();
+        response.setStatus(HttpServletResponse.SC_CONFLICT);
+
+        if(gameById.isPresent())
+        {
+            Game game = gameById.get();
+            Player player = playerService.createPlayer(user, game.getMinTokenAmount());
+
+
+            if (player != null && game.getPlayers() < 4)
+            {
+                if(game.getPlayer1() == null){
+                    gameRepository.updatePlayer1(game.getId(), player);
+                }
+                else if(game.getPlayer2() == null){
+                    gameRepository.updatePlayer2(game.getId(), player);
+                }
+                else if(game.getPlayer3() == null){
+                    gameRepository.updatePlayer3(game.getId(), player);
+                }
+                else if(game.getPlayer4() == null){
+                    gameRepository.updatePlayer4(game.getId(), player);
+                }
+
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+        }
+    }
+
+    public GameInfo getGameInfo(Long id)
+    {
+        Optional<Game> byId = gameRepository.findById(id);
+
+        if(byId.isPresent())
+        {
+            Game game = byId.get();
+            GameInfo gameInfo = new GameInfo();
+            gameInfo.setGameState(game.getGameState().name());
+            gameInfo.setJackpot(game.getJackpot());
+            gameInfo.setPlayers(game.getPlayers());
+
+            if (game.getPlayer1() != null) gameInfo.setPlayer1(playerService.getPlayerInfo(game.getPlayer1()));
+            if (game.getPlayer2() != null) gameInfo.setPlayer2(playerService.getPlayerInfo(game.getPlayer2()));
+            if (game.getPlayer3() != null) gameInfo.setPlayer3(playerService.getPlayerInfo(game.getPlayer3()));
+            if (game.getPlayer4() != null) gameInfo.setPlayer4(playerService.getPlayerInfo(game.getPlayer4()));
+
+            return gameInfo;
+        }
+
+        return null;
     }
 }

@@ -32,5 +32,7 @@ public class Player {
     )
     private User user;
     private Long tokens;
+    @Enumerated(EnumType.STRING)
+    private PlayerStatus playerStatus;
 
 }

@@ -20,16 +20,27 @@ public class PlayerService {
 
     public Player createPlayer(User user, Long minTokenAmount)
     {
-        if(userService.takeTokensFromUser(minTokenAmount, user.getId())) {
+
+        Optional<Player> playerByUser = getPlayerByUser(user);
+
+        if(!playerByUser.isPresent() && userService.takeTokensFromUser(minTokenAmount, user.getEmail())) {
             Player player = new Player();
             player.setUser(user);
             player.setTokens(minTokenAmount);
+            player.setPlayerStatus(PlayerStatus.WAITING);
             player = playerRepository.save(player);
             return player;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
+    }
+
+    public PlayerInfo getPlayerInfo(Player player)
+    {
+        PlayerInfo playerInfo = new PlayerInfo();
+        playerInfo.setName(player.getUser().getNickname());
+        playerInfo.setTokens(player.getTokens());
+        playerInfo.setStatus(player.getPlayerStatus().name());
+        return playerInfo;
     }
 }
