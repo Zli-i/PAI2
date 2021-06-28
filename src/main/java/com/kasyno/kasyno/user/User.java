@@ -30,7 +30,6 @@ public class User implements UserDetails {
                 ", email='" + email + '\'' +
                 ", role='" + role + '\'' +
                 ", authProvider=" + authProvider +
-                ", dob=" + dob +
                 ", joined=" + joined;
     }
 
@@ -52,40 +51,30 @@ public class User implements UserDetails {
     private ApplicationUserRole role;
     @Enumerated(EnumType.STRING)
     private AuthenticationProvider authProvider;
-    private LocalDate dob;
     private LocalDate joined;
     private Long tokens;
     private Boolean locked = false;
     private Boolean enabled = false;
-    @Transient
-    private int age;
 
-    public User(String nickname, String email, String password, ApplicationUserRole role, AuthenticationProvider authProvider, LocalDate dob, LocalDate joined, Long toekns) {
+    public User(String nickname, String email, String password, ApplicationUserRole role, AuthenticationProvider authProvider, LocalDate joined, Long toekns) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.role = role;
         this.authProvider = authProvider;
-        this.dob = dob;
         this.joined = joined;
         this.tokens = toekns;
     }
 
-    public User(String nickname, String email, String password, ApplicationUserRole role, AuthenticationProvider authProvider, LocalDate dob, LocalDate joined, Long toekns, Boolean enabled) {
+    public User(String nickname, String email, String password, ApplicationUserRole role, AuthenticationProvider authProvider, LocalDate joined, Long toekns, Boolean enabled) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.role = role;
         this.authProvider = authProvider;
-        this.dob = dob;
         this.joined = joined;
         this.tokens = toekns;
         this.enabled = enabled;
-    }
-
-    public Integer getAge()
-    {
-        return Period.between(dob, LocalDate.now()).getYears();
     }
 
     @Override

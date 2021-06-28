@@ -1,6 +1,5 @@
 package com.kasyno.kasyno.poker;
 
-import com.kasyno.kasyno.poker.deck.Card;
 import com.kasyno.kasyno.poker.player.Player;
 import io.swagger.models.auth.In;
 import lombok.Getter;
