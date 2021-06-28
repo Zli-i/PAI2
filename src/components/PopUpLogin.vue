@@ -102,7 +102,7 @@ import GoogleSignInButton from 'vue-google-signin-button-directive';
 
         console.log("Token" , response.headers.authorization)
 
-        
+        location.reload()
       },
       async googleAuthPost(authCode)
       {
@@ -123,6 +123,7 @@ import GoogleSignInButton from 'vue-google-signin-button-directive';
             .then(data => {
                 localStorage.setItem('token', data);
                 console.log("Token",data);
+                location.reload()
             }) 
         })
         .catch((error) => {

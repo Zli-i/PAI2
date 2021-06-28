@@ -5,6 +5,8 @@
             </div>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
+            <h3 v-if="user">Witaj, {{user.email}}, posiadasz {{user.tokens}} tokenów</h3>
+
             <v-spacer></v-spacer>
 
             <!--<v-btn
@@ -15,8 +17,15 @@
                 <span class="mr-2">Latest Release</span>
                 <v-icon>mdi-open-in-new</v-icon>
             </v-btn>-->
-            <PopupLogin />
-            <PopupReg />
+            <div v-if="!user">
+                <PopupLogin />
+                <PopupReg />
+            </div>
+            <div v-if="user">
+                <v-btn dark v-on:click="handleLogout">
+                    Wyloguj
+                </v-btn>
+            </div>
             
         </v-toolbar>
 
@@ -44,6 +53,7 @@ import PopupLogin from './PopUpLogin'
 import PopupReg from './PopupRegister'
 
   export default {
+    props: ['user'],
     components: {PopupLogin, PopupReg},
     data: () => ({
       drawer: false,
@@ -51,7 +61,7 @@ import PopupReg from './PopupRegister'
       list: [
           { icon: 'mdi-home', text: 'Strona główna', route: '/'},
           { icon: 'mdi-person', text: 'Profil', route: '/'},
-          { icon: 'mdi-setting', text: 'Ustawienia', route: '/'},
+          { icon: 'mdi-credit-card', text: 'Doładuj tokeny', route: '/paypal'},
           { icon: 'mdi-fact-check', text: 'Regulamin', route: '/'},
           { icon: 'mdi-login', text: 'Logowanie', route: '/'},
           { icon: 'mdi-account-box', text: 'Rejestracja', route: '/'}
@@ -63,5 +73,13 @@ import PopupReg from './PopupRegister'
         this.drawer = false
       },
     },
+    methods: {
+        handleLogout() 
+        {
+            localStorage.removeItem('token');
+            this.$router.push('/');
+            location.reload();
+        }
+    }
   }
 </script>

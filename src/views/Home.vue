@@ -31,11 +31,13 @@
 </template>
 
 <script>
-  import gameList from '../components/gameList.vue'
+import gameList from '../components/gameList.vue'
 
   export default {
+    props: ['user'],
     components: {gameList},
     data () {
+      
       return {
         colors: [
           'primary',
@@ -45,6 +47,6 @@
           'error',
         ],
       }
-    },
+    }
   }
 </script>
