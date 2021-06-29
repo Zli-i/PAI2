@@ -48,5 +48,9 @@ public class GameController {
     public void call(@RequestParam("Id") Long id, Principal principal){
         gameService.call(id, principal);
     }
+    @PostMapping("/end")
+    public void call(@RequestParam("Id") Long id){
+        gameService.endGame(id);
+    }
 
 }

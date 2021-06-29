@@ -28,6 +28,7 @@ public class GameService {
     private final GameRepository gameRepository;
     private final UserService userService;
     private final PlayerService playerService;
+    private final PlayerRepository playerRepository;
 
     public List<GameIdAndPlayers> getGames() {
         return gameRepository.findAllByOrderById();
@@ -150,6 +151,53 @@ public class GameService {
         }
     }
 
+    public void endGame(Long id)
+    {
+        Optional<Game> byId = gameRepository.findById(id);
+
+        if (!byId.isPresent())
+        {
+            return;
+        }
+
+        Game game = byId.get();
+
+        if( game.getGameState() == END )
+        {
+            if(game.getPlayer1() != null)
+            {
+                Player player = game.getPlayer1();
+                userService.addTokensToUser(game.getPlayer1().getUser().getEmail(), game.getJackpot());
+                userService.addTokensToUser(game.getPlayer1().getUser().getEmail(), game.getPlayer1().getTokens());
+                game.setPlayer1(null);
+                playerRepository.deleteById(player.getId());
+            }
+            if(game.getPlayer2() != null)
+            {
+                Player player = game.getPlayer2();
+                userService.addTokensToUser(game.getPlayer2().getUser().getEmail(), game.getPlayer2().getTokens());
+                game.setPlayer2(null);
+                playerRepository.deleteById(player.getId());
+            }
+            if(game.getPlayer3() != null)
+            {
+                Player player = game.getPlayer3();
+                userService.addTokensToUser(game.getPlayer3().getUser().getEmail(), game.getPlayer3().getTokens());
+                game.setPlayer3(null);
+                playerRepository.deleteById(player.getId());
+            }
+            if(game.getPlayer4() != null)
+            {
+                Player player = game.getPlayer4();
+                userService.addTokensToUser(game.getPlayer4().getUser().getEmail(), game.getPlayer4().getTokens());
+                game.setPlayer4(null);
+                playerRepository.deleteById(player.getId());
+            }
+
+            gameRepository.deleteById(game.getId());
+        }
+    }
+
     public void call(Long id, Principal principal)
     {
         Optional<Game> byId = gameRepository.findById(id);
@@ -237,22 +285,23 @@ public class GameService {
             Game game = byId.get();
             List<String> deck = game.getDeck();
 
-                for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 5; i++) {
 
-                    if (game.getPlayer1() != null && game.getPlayer1().getPlayerStatus() == CALL) {
-                        game.getPlayer1().getDeck().add(deck.remove(0));
-                    }
-                    if (game.getPlayer2() != null && game.getPlayer2().getPlayerStatus() == CALL) {
-                        game.getPlayer2().getDeck().add(deck.remove(0));
-                    }
-                    if (game.getPlayer3() != null && game.getPlayer3().getPlayerStatus() == CALL) {
-                        game.getPlayer3().getDeck().add(deck.remove(0));
-                    }
-                    if (game.getPlayer4() != null && game.getPlayer4().getPlayerStatus() == CALL) {
-                        game.getPlayer4().getDeck().add(deck.remove(0));
-                    }
+                if (game.getPlayer1() != null && game.getPlayer1().getPlayerStatus() == CALL) {
+                    game.getPlayer1().getDeck().add(deck.remove(0));
                 }
-                gameRepository.save(game);
+                if (game.getPlayer2() != null && game.getPlayer2().getPlayerStatus() == CALL) {
+                    game.getPlayer2().getDeck().add(deck.remove(0));
+                }
+                if (game.getPlayer3() != null && game.getPlayer3().getPlayerStatus() == CALL) {
+                    game.getPlayer3().getDeck().add(deck.remove(0));
+                }
+                if (game.getPlayer4() != null && game.getPlayer4().getPlayerStatus() == CALL) {
+                    game.getPlayer4().getDeck().add(deck.remove(0));
+                }
             }
+            game.setGameState(END);
+            gameRepository.save(game);
         }
+    }
 }
