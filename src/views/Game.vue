@@ -206,6 +206,7 @@ export default {
             ).then(
                 (response) => {
                   console.log(response);
+                  location.reload();
                 }
             ).catch(
                 (e) => {
@@ -226,6 +227,7 @@ export default {
             ).then(
                 (response) => {
                   console.log(response);
+                  location.reload();
                 }
             ).catch(
                 (e) => {
@@ -245,6 +247,7 @@ export default {
             ).then(
                 (response) => {
                   console.log(response);
+                  location.reload();
                 }
             ).catch(
                 (e) => {
@@ -264,6 +267,8 @@ export default {
             ).then(
                 (response) => {
                   console.log(response);
+                  this.$router.push('/')
+                  location.reload();
                 }
             ).catch(
                 (e) => {
