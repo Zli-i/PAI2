@@ -1,6 +1,8 @@
 package com.kasyno.kasyno.poker;
 
+import com.kasyno.kasyno.poker.deck.Card;
 import com.kasyno.kasyno.poker.deck.Decks;
+import com.kasyno.kasyno.poker.deck.Hand;
 import com.kasyno.kasyno.poker.player.Player;
 import com.kasyno.kasyno.poker.player.PlayerRepository;
 import com.kasyno.kasyno.poker.player.PlayerService;
@@ -14,9 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.kasyno.kasyno.poker.GameState.*;
 import static com.kasyno.kasyno.poker.player.PlayerStatus.*;
@@ -125,26 +125,19 @@ public class GameService {
         if(byId.isPresent())
         {
             Game game = byId.get();
+            List<Player> playerList = game.getPlayerList();
+            ListIterator<Player> playerListIterator = playerList.listIterator();
+
 
             if(game.getGameState() == WAITING_FOR_PLAYERS && game.getPlayers() > 1)
             {
                 game.setGameState(BIDDING_1);
-                if (game.getPlayer1() != null) {
-                    game.getPlayer1().setPlayerStatus(PLAYING);
+
+                while (playerListIterator.hasNext()) {
+                    playerListIterator.next().setPlayerStatus(PLAYING);
                     acrivePlayers++;
                 }
-                if (game.getPlayer2() != null) {
-                    game.getPlayer2().setPlayerStatus(PLAYING);
-                    acrivePlayers++;
-                }
-                if (game.getPlayer3() != null) {
-                    game.getPlayer3().setPlayerStatus(PLAYING);
-                    acrivePlayers++;
-                };
-                if (game.getPlayer4() != null) {
-                    game.getPlayer4().setPlayerStatus(PLAYING);
-                    acrivePlayers++;
-                }
+
                 game.setActivePlayers(acrivePlayers);
                 gameRepository.save(game);
             }
@@ -161,13 +154,34 @@ public class GameService {
         }
 
         Game game = byId.get();
+        int[] handValues = {9999,9999,9999,9999};
 
         if( game.getGameState() == END )
         {
+            List<Player> playerList = game.getPlayerList();
+
+            for (int i = 0; i < playerList.size(); i++)
+            {
+                String cards = new String();
+                for (int j = 0; j < playerList.get(i).getDeck().size(); j++){
+                    cards += playerList.get(i).getDeck().get(j) + " ";
+                }
+                Card[] hand = Hand.fromString(cards);
+
+                handValues[i] = Hand.evaluate(hand);
+            }
+
+            int minAt = 0;
+
+            for (int i = 0; i < handValues.length; i++) {
+                minAt = handValues[i] < handValues[minAt] ? i : minAt;
+            }
+
+            userService.addTokensToUser(playerList.get(minAt).getUser().getEmail(), game.getJackpot());
+
             if(game.getPlayer1() != null)
             {
                 Player player = game.getPlayer1();
-                userService.addTokensToUser(game.getPlayer1().getUser().getEmail(), game.getJackpot());
                 userService.addTokensToUser(game.getPlayer1().getUser().getEmail(), game.getPlayer1().getTokens());
                 game.setPlayer1(null);
                 playerRepository.deleteById(player.getId());
@@ -203,72 +217,28 @@ public class GameService {
         Optional<Game> byId = gameRepository.findById(id);
         Optional<User> userByEmail = userService.getUserByEmail(principal.getName());
 
+
         if(byId.isPresent() && userByEmail.isPresent() && byId.get().getGameState() != WAITING_FOR_PLAYERS) {
             Game game = byId.get();
             User user = userByEmail.get();
-            Integer playerTurn = game.getPlayerTurn();
+            int playerTurn = game.getPlayerTurn();
+            List<Player> playerList = game.getPlayerList();
 
-            switch (game.getPlayerTurn()) {
-                case 0:
-                    if (game.getPlayer1() != null && game.getPlayer1().getPlayerStatus() == PLAYING) {
-                        if (game.getPlayer1().getUser() == user && playerTurn == 0) {
-                            game.getPlayer1().setTokens(game.getPlayer1().getTokens() - game.getMinCall());
-                            game.setJackpot(game.getJackpot() + game.getMinCall());
-                            game.getPlayer1().setPlayerStatus(CALL);
-                            game.setPlayerTurn(game.getPlayerTurn() + 1);
-                        }
-                        break;
+            for (int i = playerTurn; i < game.getActivePlayers(); i++)
+            {
+                if (playerList.get(i).getPlayerStatus() == PLAYING) {
+                    if (playerList.get(i).getUser() == user) {
+                        playerList.get(i).setTokens(playerList.get(i).getTokens() - game.getMinCall());
+                        game.setJackpot(game.getJackpot() + game.getMinCall());
+                        playerList.get(i).setPlayerStatus(CALL);
+                        game.setPlayerTurn(game.getPlayerTurn() + 1);
                     }
-                    else
-                    {
-                        playerTurn++;
-                    }
-                case 1:
-                    if (game.getPlayer2() != null && game.getPlayer2().getPlayerStatus() == PLAYING) {
-                        if (game.getPlayer2().getUser() == user && playerTurn == 1) {
-                            game.getPlayer2().setTokens(game.getPlayer2().getTokens() - game.getMinCall());
-                            game.setJackpot(game.getJackpot() + game.getMinCall());
-                            game.getPlayer2().setPlayerStatus(CALL);
-                            game.setPlayerTurn(game.getPlayerTurn() + 1);
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        playerTurn++;
-                    }
-                case 2:
-                    if (game.getPlayer3() != null && game.getPlayer3().getPlayerStatus() == PLAYING) {
-                        if (game.getPlayer3().getUser() == user && playerTurn == 2) {
-                            game.getPlayer3().setTokens(game.getPlayer3().getTokens() - game.getMinCall());
-                            game.setJackpot(game.getJackpot() + game.getMinCall());
-                            game.getPlayer3().setPlayerStatus(CALL);
-                            game.setPlayerTurn(game.getPlayerTurn() + 1);
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        playerTurn++;
-                    }
-                case 3:
-                    if (game.getPlayer4() != null && game.getPlayer4().getPlayerStatus() == PLAYING) {
-                        if (game.getPlayer4().getUser() == user && game.getPlayer4().getPlayerStatus() == PLAYING) {
-                            game.getPlayer4().setTokens(game.getPlayer4().getTokens() - game.getMinCall());
-                            game.setJackpot(game.getJackpot() + game.getMinCall());
-                            game.getPlayer4().setPlayerStatus(CALL);
-                            game.setPlayerTurn(game.getPlayerTurn() + 1);
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        playerTurn++;
-                    }
+                    break;
+                }
             }
 
             game = gameRepository.save(game);
-            if(game.getPlayerTurn().equals(game.getActivePlayers()))
+            if(game.getPlayerTurn() == game.getActivePlayers())
             {
                 dealCards(game.getId());
             }
@@ -284,20 +254,15 @@ public class GameService {
         {
             Game game = byId.get();
             List<String> deck = game.getDeck();
+            List<Player> playerList = game.getPlayerList();
 
             for (int i = 0; i < 5; i++) {
-
-                if (game.getPlayer1() != null && game.getPlayer1().getPlayerStatus() == CALL) {
-                    game.getPlayer1().getDeck().add(deck.remove(0));
-                }
-                if (game.getPlayer2() != null && game.getPlayer2().getPlayerStatus() == CALL) {
-                    game.getPlayer2().getDeck().add(deck.remove(0));
-                }
-                if (game.getPlayer3() != null && game.getPlayer3().getPlayerStatus() == CALL) {
-                    game.getPlayer3().getDeck().add(deck.remove(0));
-                }
-                if (game.getPlayer4() != null && game.getPlayer4().getPlayerStatus() == CALL) {
-                    game.getPlayer4().getDeck().add(deck.remove(0));
+                ListIterator<Player> playerListIterator = playerList.listIterator();
+                while (playerListIterator.hasNext()) {
+                    Player next = playerListIterator.next();
+                    if (next.getPlayerStatus() == CALL) {
+                        next.getDeck().add(deck.remove(0));
+                    }
                 }
             }
             game.setGameState(END);

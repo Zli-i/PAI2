@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Decks {
 
-    private static String[] colors = new String[]{"S", "H", "C", "D"};
+    private static String[] colors = new String[]{"s", "h", "c", "d"};
     private static String[] numbers = new String[]{"2", "3", "4", "5", "6", "7", "8", "9", "J", "Q", "K", "A"};
 
 
@@ -19,7 +19,7 @@ public class Decks {
         {
             for (int j = 0; j < numbers.length; j++)
             {
-                cards.add(colors[i]+numbers[j]);
+                cards.add(numbers[j]+colors[i]);
             }
         }
 

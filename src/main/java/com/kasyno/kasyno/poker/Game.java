@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,14 +45,16 @@ public class Game {
     @JoinColumn(name = "player4_id")
     private Player player4;
 
-    private Integer playerTurn = 0;
+    private int playerTurn = 0;
     @Enumerated(EnumType.STRING)
     private GameState gameState = GameState.WAITING_FOR_PLAYERS;
     @ElementCollection
     private List<String > deck = new LinkedList<>();
     @Transient
     private Integer players;
-    private Integer activePlayers = 0;
+    @Transient
+    private List<Player> playerList = new LinkedList<>();
+    private int activePlayers = 0;
 
 
     public Integer getPlayers(){
@@ -66,5 +69,16 @@ public class Game {
         return players;
     }
 
+    public List<Player> getPlayerList()
+    {
+        List<Player> playerList = new ArrayList<>();
+
+        if (getPlayer1() != null) playerList.add(getPlayer1());
+        if (getPlayer2() != null) playerList.add(getPlayer2());
+        if (getPlayer3() != null) playerList.add(getPlayer3());
+        if (getPlayer4() != null) playerList.add(getPlayer4());
+
+        return playerList;
+    }
 
 }
