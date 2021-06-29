@@ -23,7 +23,7 @@ public class PlayerService {
 
         Optional<Player> playerByUser = getPlayerByUser(user);
 
-        if(!playerByUser.isPresent() && userService.takeTokensFromUser(minTokenAmount, user.getEmail())) {
+        if(playerByUser.isEmpty() && userService.takeTokensFromUser(minTokenAmount, user.getEmail())) {
             Player player = new Player();
             player.setUser(user);
             player.setTokens(minTokenAmount);

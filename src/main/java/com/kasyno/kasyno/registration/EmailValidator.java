@@ -12,6 +12,9 @@ public class EmailValidator implements Predicate<String> {
     public boolean test(String email) {
 
         boolean result = true;
+
+        if (email == null)
+            return false;
         try {
             InternetAddress emailAddr = new InternetAddress(email);
             emailAddr.validate();

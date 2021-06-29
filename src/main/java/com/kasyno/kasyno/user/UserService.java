@@ -2,6 +2,7 @@ package com.kasyno.kasyno.user;
 
 import com.kasyno.kasyno.Oauth2.AuthenticationProvider;
 import com.kasyno.kasyno.email.EmailService;
+import com.kasyno.kasyno.registration.EmailValidator;
 import com.kasyno.kasyno.registration.token.ConfirmationToken;
 import com.kasyno.kasyno.registration.token.ConfirmationTokenService;
 import com.kasyno.kasyno.security.ApplicationUserRole;
@@ -27,6 +28,7 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailService emailService;
+    private final EmailValidator emailValidator;
 
     public List<User> getUsers() {
 
@@ -117,6 +119,11 @@ public class UserService implements UserDetailsService {
 
     public String signUpUser(User user) {
 
+        if (!emailValidator.test(user.getEmail()))
+        {
+            return "error";
+        }
+
         Optional<User> userByEmail = userRepository.findUserByEmail(user.getEmail());
 
         boolean userExists = userByEmail.isPresent();
@@ -129,7 +136,8 @@ public class UserService implements UserDetailsService {
                 emailService.sendToken(userByEmail.get().getEmail(), userByEmail.get().getUsername(), token.get().getToken());
             }
 
-            throw new IllegalStateException("email already taken");
+            //throw new IllegalStateException("email already taken");
+            return "error";
         }
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -147,11 +155,10 @@ public class UserService implements UserDetailsService {
                 user
         );
 
-
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
 
-//        TODO: SEND EMAIL
+        emailService.sendToken(user.getEmail(), user.getUsername(), token);
 
         return token;
     }

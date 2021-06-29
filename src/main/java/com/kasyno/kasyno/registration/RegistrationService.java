@@ -13,12 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 
 import static com.kasyno.kasyno.Oauth2.AuthenticationProvider.*;
 import static com.kasyno.kasyno.security.ApplicationUserRole.*;
+import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 @Service
 @AllArgsConstructor
@@ -29,12 +33,13 @@ public class RegistrationService {
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailService emailService;
 
-    public String register(RegistrationRequest request) {
+    public void register(RegistrationRequest request, HttpServletResponse response) throws IOException {
         boolean isValidEmail = emailValidator.
                 test(request.getEmail());
 
         if (!isValidEmail) {
-            throw new IllegalStateException("email not valid");
+            response.sendError(SC_CONFLICT);
+            return;
         }
 
         String token = userService.signUpUser(
@@ -49,9 +54,14 @@ public class RegistrationService {
                 )
         );
 
-        emailService.sendToken(request.getEmail(), request.getUsername(), token);
+        if (token.equals("error"))
+        {
+            response.sendError(SC_CONFLICT);
+            return;
+        }
 
-        return token;
+        emailService.sendToken(request.getEmail(), request.getUsername(), token);
+        response.setStatus(SC_OK);
     }
 
     @Transactional

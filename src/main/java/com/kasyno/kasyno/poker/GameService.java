@@ -117,7 +117,7 @@ public class GameService {
         return null;
     }
 
-    public void startGame(Long id) {
+    public boolean startGame(Long id) {
 
         Optional<Game> byId = gameRepository.findById(id);
         Integer acrivePlayers = 0;
@@ -140,8 +140,11 @@ public class GameService {
 
                 game.setActivePlayers(acrivePlayers);
                 gameRepository.save(game);
+                return true;
             }
         }
+
+        return false;
     }
 
     public void endGame(Long id)
