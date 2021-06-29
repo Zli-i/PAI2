@@ -1,7 +1,32 @@
 <template>
     <div id="app">
     <div class="settings">
-      <button class="setting-button">Dodaj gracza</button>
+      <button class="setting-button"
+        v-on:click="startGame"
+      >
+        Start Game
+      </button>
+
+      <v-btn 
+        v-on:click="callGame"
+      >
+
+          Call
+
+      </v-btn>
+
+      <v-btn
+        v-on:click="getInfo"
+      >
+        Get Info
+      </v-btn>
+
+      <v-btn
+        v-on:click="endGame"
+      >
+        End Game
+      </v-btn>
+
       <button class="setting-button" @click="rozdajKarty()">
         Rozdaj karty
       </button>
@@ -11,37 +36,114 @@
     </div>
     <div class="players-section">
       <player
-        v-for="(p, players_in_game) in players"
-        :key="players_in_game"
-        :name="p.name"
-        :color="p.color"
-        :bank_value="p.bank_value"
-        :class="['player-' + p.id]"
+        v-if="playersList.player1"
+        :name="playersList.player1.name"
+        :bank_value="playersList.player1.tokens"
+        :class="['player-' + 1]"
+      >
+      </player>
+      <player
+        v-if="playersList.player2"
+        :name="playersList.player2.name"
+        :bank_value="playersList.player2.tokens"
+        :class="['player-' + 2]"
+      >
+      </player>
+      <player
+        v-if="playersList.player3"
+        :name="playersList.player3.name"
+        :bank_value="playersList.player3.tokens"
+        :class="['player-' + 3]"
+      >
+      </player>
+      <player
+        v-if="playersList.player4"
+        :name="playersList.player4.name"
+        :bank_value="playersList.player4.tokens"
+        :class="['player-' + 4]"
       >
       </player>
       <div
-        v-for="(place, index) in players"
-        :key="index"
-        :class="['player-' + place.id + '-card-place']"
+        v-if="playersList.player1"
+        :class="['player-' + 1 + '-card-place']"
       >
-        <card
-          v-for="(card, index) in place.deck"
-          :key="index"
-          :card="card"
-        ></card>
+        <v-row v-if="playersList.player1.deck">
+          <v-card
+            v-for="(card, index) in playersList.player1.deck"
+            :key="index"
+            width="50"
+            height="70"
+          >
+            <v-card-text>
+              {{card}}
+            </v-card-text>
+          </v-card>
+        </v-row>
+      </div>
+      <div
+        v-if="playersList.player2"
+        :class="['player-' + 2 + '-card-place']"
+      >
+        <v-row v-if="playersList.player2.deck">
+          <v-card
+            v-for="(card, index) in playersList.player2.deck"
+            :key="index"
+            width="50"
+            height="70"
+          >
+            <v-card-text>
+              {{card}}
+            </v-card-text>
+          </v-card>
+        </v-row>
+      </div>
+      <div
+        v-if="playersList.player3"
+        :class="['player-' + 3 + '-card-place']"
+      >
+        <v-row v-if="playersList.player3.deck">
+          <v-card
+            v-for="(card, index) in playersList.player3.deck"
+            :key="index"
+            width="50"
+            height="70"
+          >
+            <v-card-text>
+              {{card}}
+            </v-card-text>
+          </v-card>
+        </v-row>
+      </div>
+      <div
+        v-if="playersList.player4"
+        :class="['player-' + 4 + '-card-place']"
+      >
+        <v-row v-if="playersList.player4.deck">
+          <v-card
+            v-for="card in playersList.player4.deck"
+            :key="card"
+            width="50"
+            height="70"
+          >
+            <v-card-text>
+              {{card}}
+            </v-card-text>
+          </v-card>
+        </v-row>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Card from "../components/Card.vue";
+//import Card from "../components/Card.vue";
 import Player from "../components/Player.vue";
+import axios from 'axios'
+import endpoint from '@/endpoint.json';
 
 export default {
   name: "App",
   components: {
-    card: Card,
     player: Player,
   },
   data() {
@@ -70,6 +172,7 @@ export default {
         "D",
         "K",
       ],
+      playersList : []
     };
   },
   computed: {
@@ -91,6 +194,84 @@ export default {
     pobierzLiczbeGraczy();
     pobierzDaneGraczy();
      */
+    async startGame()
+    {
+      await axios.post(`${endpoint.url}/games/start?Id=` + this.$route.query.room_id,
+                {},
+                {
+                    headers: {
+                    Authorization: localStorage.getItem('token')
+                    }
+                }
+            ).then(
+                (response) => {
+                  console.log(response);
+                }
+            ).catch(
+                (e) => {
+                    console.log(e);
+                }
+            )
+    },
+
+    async callGame()
+    {
+      await axios.post(`${endpoint.url}/games/call?Id=` + this.$route.query.room_id,
+                {},
+                {
+                    headers: {
+                    Authorization: localStorage.getItem('token')
+                    }
+                }
+            ).then(
+                (response) => {
+                  console.log(response);
+                }
+            ).catch(
+                (e) => {
+                    console.log(e);
+                }
+            )
+    },
+    async getInfo()
+    {
+        await axios.post(`${endpoint.url}/games/info?Id=` + this.$route.query.room_id,
+                {},
+                {
+                    headers: {
+                    Authorization: localStorage.getItem('token')
+                    }
+                }
+            ).then(
+                (response) => {
+                  console.log(response);
+                }
+            ).catch(
+                (e) => {
+                    console.log(e);
+                }
+            )
+    },
+    async endGame()
+    {
+      await axios.post(`${endpoint.url}/games/end?Id=` + this.$route.query.room_id,
+                {},
+                {
+                    headers: {
+                    Authorization: localStorage.getItem('token')
+                    }
+                }
+            ).then(
+                (response) => {
+                  console.log(response);
+                }
+            ).catch(
+                (e) => {
+                    console.log(e);
+                }
+            )
+    },
+
     rozdajKarty() {
       console.log("Test");
       this.players.forEach((player) => {
@@ -142,6 +323,29 @@ export default {
       return this.playing_cards;
     }*/,
   },
+  async created()
+  {
+    const response = await axios.post(`${endpoint.url}/games/info?Id=` + this.$route.query.room_id,
+                {},
+                {
+                    headers: {
+                    Authorization: localStorage.getItem('token')
+                    }
+                }
+            ).then(
+                (response) => {
+                  console.log(response);
+                  this.playersList = response.data
+                  console.log('tehee', this.playersList) 
+                }
+            ).catch(
+                (e) => {
+                    console.log(e);
+                }
+            )
+
+            console.log(response)
+  }
 };
 </script>
 

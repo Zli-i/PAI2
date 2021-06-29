@@ -20,30 +20,25 @@
 
                 <v-col
                     v-for="paczka in paczki"
-                    :key="paczka"
-                    cols="6"
-                    md="4"
+                    :key="paczka.bundle"
+                    cols="3"
+                    md="3"
                     align="center"
                     justify="center"
                 >
-                    <v-sheet
-                        color="white"
-                        elevation="12"
-                        height="250"
-                        rounded
-                        width="450"
-                    >
-                    <v-container
-                    fill-height
-                    >
-                        Cena : {{paczka.price}} Ilość tokenów: {{paczka.token}}
-                        <v-btn v-on:click="handlePaypalRequest(paczka.bundle)">
+                        <v-img 
+                            :src="require(`../assets/${paczka.token}TOKEN.png`)"
+                        > 
+
+                        </v-img>
+                        <v-btn 
+                            v-on:click="handlePaypalRequest(paczka.bundle)"
+                            align="center"
+                            justify="center"
+                        >
                             Kup teraz!
                         </v-btn>
                         
-                    </v-container>
-                        
-                    </v-sheet>
                 </v-col>
             </v-row>
         </div>

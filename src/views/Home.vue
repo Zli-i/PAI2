@@ -19,14 +19,14 @@
             align="center"
             justify="center"
           >
-            <div class="display-3">
-              Tmp banner
+            <div class="display-2">
+              {{texts[i]}}
             </div>
           </v-row>
         </v-sheet>
       </v-carousel-item>
     </v-carousel>
-    <gameList />
+    <gameList :user="user"/>
   </div>
 </template>
 
@@ -46,6 +46,13 @@ import gameList from '../components/gameList.vue'
           'warning',
           'error',
         ],
+        texts: [
+          'Od zera do klasy średniej, w 5 lata!',
+          'Tutaj kasyno zawsze wygrywa',
+          '"Najlepsze kasyno jakie istnieje!"-Kolega ze studiów',
+          '"Aż chce się grać"-Inny kolega ze studiów',
+          '"Przegrałem oszczędności życia w tym kasynie"-Ten sam kolega ze studiów'
+        ]
       }
     }
   }

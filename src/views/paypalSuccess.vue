@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h1>
-            siema
+        <h1 class="warning--text">
+            Oczekiwanie na potwierdzenie płatności, proszę czekać.
         </h1>
     </div>
 </template>

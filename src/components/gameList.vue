@@ -1,47 +1,113 @@
 <template>
-    <v-row
-        align="center"
-        justify="center">
-
-      <v-col
-        v-for="(game, index) in gameList"
-        :key="index"
-        cols="6"
-        md="4"
-        align="center"
-        justify="center"
-      >
-        <v-sheet
-            color="white"
-            elevation="12"
-            height="250"
-            rounded
-            width="450"
-        >
-        <v-container
-        fill-height
-        >
-            <v-row 
+    <div>
+        <div v-if="user">
+            <v-row
                 align="center"
                 justify="center">
-            >
-                {{game.player1.user.nickname}}
-            </v-row>
-            <v-row 
+
+            <v-col
+                v-for="item in gamesList"
+                :key="item.id"
+                cols="6"
+                md="4"
                 align="center"
                 justify="center"
             >
-                <v-btn v-on:click="joinToGame(1)"
-                dark
+                <v-sheet
+                    color="white"
+                    elevation="12"
+                    height="250"
+                    rounded
+                    width="450"
                 >
-                    Dołącz do gry
-                </v-btn>
+                <v-container
+                fill-height
+                >
+                    <v-row 
+                        align="center"
+                        justify="center">
+                    >
+                        {{item.player1.user.nickname}}
+                    </v-row>
+                    <v-row 
+                        v-if="item.player2"
+                        align="center"
+                        justify="center">
+                    >
+                        {{item.player2.user.nickname}}
+                    </v-row>
+                    <v-row 
+                        v-if="item.player3"
+                        align="center"
+                        justify="center">
+                    >
+                        {{item.player3.user.nickname}}
+                    </v-row>
+                    <v-row 
+                        v-if="item.player4"
+                        align="center"
+                        justify="center">
+                    >
+                        {{item.player4.user.nickname}}
+                    </v-row>
+                    <v-row 
+                        v-if="!item.player4"
+                        align="center"
+                        justify="center"
+                    >
+                        <v-btn v-on:click="joinToGame(item.id)"
+                        dark
+                        >
+                            Dołącz do gry
+                        </v-btn>
+                    </v-row>
+                </v-container>
+                    
+                </v-sheet>
+            </v-col>
+
+            <v-col
+                cols="6"
+                md="4"
+                align="center"
+                justify="center"
+            >
+                <v-sheet
+                    color="white"
+                    elevation="12"
+                    height="250"
+                    rounded
+                    width="450"
+                >
+                <v-container
+                fill-height
+                >
+                    <v-row 
+                        align="center"
+                        justify="center"
+                    >
+                        <v-btn v-on:click="createGame()"
+                        dark
+                        >
+                            Stwórz nową grę
+                        </v-btn>
+                    </v-row>
+                </v-container>
+                    
+                </v-sheet>
+            </v-col>
+
             </v-row>
-        </v-container>
-            
-        </v-sheet>
-      </v-col>
-    </v-row>
+        </div>
+        <div v-if="!user">
+            <h1 
+                align="center"
+                justify="center"
+            >
+                Zaloguj się, aby uzyskać dostęp do serwisu.
+            </h1>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -49,6 +115,7 @@ import axios from 'axios'
 import endpoint from '@/endpoint.json';
 
   export default {
+    props: ['user'],
     data: () => ({
         pokoje : [
             {id: 1, gracze : [
@@ -88,7 +155,8 @@ import endpoint from '@/endpoint.json';
                 ]
             }
         ],
-        gamesList : []
+        gamesList : [],
+        newgame : null
 
     }),
     methods:
@@ -131,39 +199,36 @@ import endpoint from '@/endpoint.json';
         {
             console.log("create game")
 
-            const response = await axios.post(`${endpoint.url}/games/create?minTokenAmount=` + 200, 
+            await axios.post(`${endpoint.url}/games/create?minTokenAmount=` + 200, 
                 {},
                 {
                     headers: {
                     Authorization: localStorage.getItem('token')
                     }
                 }
+            ).then(
+                (response) => {
+                this.$router.push( {path: 'game', query: {room_id: response.data} })
+                }
+            ).catch(
+                (e) => {
+                    console.log('error', e)
+                }
             )
-
-            console.log(response)
-
-
         }
     },
     async created() {
-        console.log("token", localStorage.getItem('token'))
-        const response = await axios.get(`${endpoint.url}/games`, {
+        //console.log("token", localStorage.getItem('token'))
+            const response = await axios.get(`${endpoint.url}/games`, {
                 headers: {
                     Authorization: localStorage.getItem('token')
                 }
-        }
-        );
-        this.gamesList = response.data;
-        console.log(response.data[0].player1.user.nickname)
-        console.log(this.gamesList)
-        /*response.data.forEach((dat) => {
-            console.log(dat.id)
-            this.gamesList = dat
-        })
-        this.gamesList.forEach((game) =>
-        {
-            console.log(game.id)
-        })*/
+            }
+            );
+            this.gamesList = response.data;
+        
+        //console.log(response.data[0].player1.user.nickname)
+        //console.log(this.gamesList[0].player1.user.nickname)
     }
   }
 </script>

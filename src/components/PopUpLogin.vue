@@ -37,21 +37,11 @@
                     ></v-text-field>
                   </v-col>
                 </v-row>
-                <v-row>
-                    <v-col>
-                      <v-checkbox label="Zapamiętaj mnie">
-                      </v-checkbox>
-                    </v-col>
-                </v-row>
                 <v-row justify="center">
-                    <v-col cols="2">
-                        <v-btn dark>
-                            <v-icon right>mdi-facebook</v-icon>
-                        </v-btn>
-                    </v-col>
-                    <v-col cols="2" class="offset-md-1">
+                    <v-col cols="4" class="offset-md-1">
                         <v-btn dark v-on:click="handleClickLogin">
-                            <v-icon >mdi-google</v-icon>
+                          <span left>Google login </span> 
+                            <v-icon right>mdi-google</v-icon>
                         </v-btn>
                     </v-col>
                     <v-col cols="4" class="offset-md-3">
